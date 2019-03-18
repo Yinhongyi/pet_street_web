@@ -10,5 +10,15 @@ export default {
       name: 'add',
       component: r =>  require.ensure([], () => r(require('./add/add-commodity')), 'add-commodity'),
     },
+    {
+      path: 'online',
+      name: 'online',
+      component: r =>  require.ensure([], () => r(require('./online/online-commodity')), 'online-commodity'),
+    },
+    {
+      path: 'return',
+      name: 'return',
+      component: r =>  require.ensure([], () => r(require('./return/return-commodity')), 'return-commodity'),
+    },
   ]
 };

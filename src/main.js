@@ -4,8 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import $http from './global/$http'
+// 引入自写公共组件
+import '@/components/common'
+
 // 按需引入elementUI
-import { Button, Select, Option, Input, Pagination, Radio, Checkbox, CheckboxButton, DatePicker } from 'element-ui'
+import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker } from 'element-ui'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = $http
@@ -18,6 +21,7 @@ Vue.use(Option)
 Vue.use(Input)
 Vue.use(Pagination)
 Vue.use(Radio)
+Vue.use(RadioGroup)
 Vue.use(Checkbox)
 Vue.use(CheckboxButton)
 Vue.use(DatePicker)

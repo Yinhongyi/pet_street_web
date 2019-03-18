@@ -36,12 +36,13 @@ export default {
     background-color: #F7F7F7;
   }
   .bottom{
-    position: fixed;
+    position: absolute;
     top: 50px;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 14px;
+    white-space: nowrap;
     .left-menu{
       display: inline-block;
       width: 180px;
@@ -56,6 +57,8 @@ export default {
       height: 100%;
       vertical-align: top;
       background-color: #F7F7F7;
+      min-width: 600px;
+      overflow: auto;
     }
   }
 </style>

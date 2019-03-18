@@ -82,19 +82,22 @@ export default {
       this.isShowLoginPage = false;
       setTimeout(()=>{
         this.isShowTipsPage = true;
-        this.isShowIcon = true;
       }, 500)
       setTimeout(()=>{
+        this.isShowIcon = true;
+      }, 700)
+
+      setTimeout(()=>{
         this.isShowTips = true;
-      }, 1500)
+      }, 1700)
       setTimeout(()=>{
         this.$router.push({path: '/manage'})
-      }, 2500)
+      }, 2700)
       setTimeout(()=>{
         this.isShowLoginPage = true;
         this.isShowIcon = false;
         this.isShowTips = false;
-      }, 2800)
+      }, 3000)
 
     }
   },
