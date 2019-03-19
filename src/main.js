@@ -8,7 +8,7 @@ import $http from './global/$http'
 import '@/components/common'
 
 // 按需引入elementUI
-import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker } from 'element-ui'
+import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker, Upload, Dialog } from 'element-ui'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = $http
@@ -25,6 +25,8 @@ Vue.use(RadioGroup)
 Vue.use(Checkbox)
 Vue.use(CheckboxButton)
 Vue.use(DatePicker)
+Vue.use(Upload)
+Vue.use(Dialog)
 
 /* eslint-disable no-new */
 new Vue({

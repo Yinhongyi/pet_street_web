@@ -17,14 +17,14 @@ const menuList = [
         name: '在线商品',
         icon: '',
         path: '/manage/commodity/online',
-        id: 1,
+        id: 2,
         parent_id: 1
       },
       {
         name: '退回商品',
         icon: '',
         path: '/manage/commodity/return',
-        id: 1,
+        id: 3,
         parent_id: 1
       },
     ]
@@ -43,7 +43,22 @@ const menuList = [
         parent_id: 2
       },
     ]
-  }
+  },
+  {
+    name: '设置',
+    icon: '',
+    path: '/manage/account',
+    id: 99,
+    children: [
+      {
+        name: '账户权限',
+        icon: '',
+        path: '/manage/account/authority',
+        id: 1,
+        parent_id: 99
+      },
+    ]
+  },
 ]
 export {
   menuList
