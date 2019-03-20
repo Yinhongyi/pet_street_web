@@ -119,6 +119,18 @@ export default {
     .item{
       margin: 15px 0;
     }
+    .el-select,.el-select.el-input{
+      display: inline-block;
+      width: 240px;
+    }
+    .el-input{
+      display: inline-block;
+      width: 240px;
+    }
+    .el-button{
+      display: inline-block;
+      width: 240px;
+    }
   }
   .tipsPage{
     height: 100%;

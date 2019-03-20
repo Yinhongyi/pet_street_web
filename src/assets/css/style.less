@@ -11,15 +11,40 @@ ul,li{
   margin:0;
   list-style:none
 }
+table{
+  min-width: 100%;
+  text-align: center;
+  border-collapse:collapse;
+  border-spacing:0;
+  table-layout: fixed;
+  white-space: normal;
+}
+table td{
+  padding: 8px;
+  word-break: break-all;
+  word-wrap:break-word;
+  border-bottom:1px solid #939598;
+}
+table thead{
+  background-color: #E0E0E0;
+}
+table thead th{
+  padding: 16px 8px;
+  word-break: break-all;
+  word-wrap:break-word;
+}
 
 //Element-UI样式
 .el-select,.el-input,.el-button,.el-date-editor.el-input{
   display: inline-block;
   width: 180px;
 }
-.el-input{
+.right-content .el-input{
   display: inline-block;
   width: 180px;
+}
+.el-pagination__jump .el-input{
+  width: 50px;
 }
 .el-date-editor.el-input{
   display: inline-block;
