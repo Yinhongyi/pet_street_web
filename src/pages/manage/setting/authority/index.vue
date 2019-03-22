@@ -1,47 +1,75 @@
 <template>
   <div class="account-authority">
-    <div class="title-line">账户管理</div>
-    <div class="second-title">修改账户</div>
+    <div class="title-line">权限管理</div>
+    <div class="second-title">新增权限</div>
     <div class="bg-line"></div>
     <div class="container">
-      <div class="item-line">
-        <span class="item-title">账户名称：</span>
-        <el-input :disabled="true" v-model="input" placeholder="请输入账户名称"></el-input>
+      <div class="item">
+        <span class="left">角色名称：</span>
+        <span class="right">
+          <div>
+            <el-input v-model="input" placeholder="请输入角色名称"></el-input>
+          </div>
+          <div>
+            <el-checkbox v-model="checked">平台工作者</el-checkbox>
+          </div>
+          <div>
+            <el-checkbox v-model="checked">其他</el-checkbox>
+          </div>
+        </span>
       </div>
-      <div class="item-line">
-        <span class="item-title">原密码：</span>
-        <el-input type="password" v-model="input" placeholder="请输入原密码"></el-input>
-      </div>
-      <div class="item-line">
-        <span class="item-title">新密码：</span>
-        <el-input type="password" v-model="input" placeholder="请输入新密码"></el-input>
-      </div>
-      <div class="item-line">
-        <span class="item-title">确认密码：</span>
-        <el-input type="password" v-model="input" placeholder="请再次输入新密码"></el-input>
-      </div>
-      <div class="item-line">
-        <span class="item-title">联系人：</span>
-        <el-input v-model="input" placeholder="请再次联系人名"></el-input>
-      </div>
-      <div class="item-line">
-        <span class="item-title">联系方式：</span>
-        <el-input v-model="input" placeholder="请输入联系方式"></el-input>
-      </div>
-      <div class="item-line">
-        <span class="item-title">账户角色：</span>
-        <el-select v-model="accountRole" placeholder="请选择账户角色" @change="selectAccountRole($event)">
-          <el-option
-            v-for="item in accountRoleList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+      <div class="item">
+        <span class="left">权限选择：</span>
+        <span class="right">
+          <table class="table" v-loading="false">
+            <thead>
+            <tr>
+              <th>统计</th>
+              <th>管理</th>
+              <th>开发</th>
+              <th>设置</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td style="width: 25%">
+                <div>
+                  <el-checkbox v-model="checked">用户分析及导出</el-checkbox>
+                </div>
+                <div>
+                  <el-checkbox v-model="checked">订单分析及导出</el-checkbox>
+                </div>
+              </td>
+              <td style="width: 25%">
+                <div>
+                  <el-checkbox v-model="checked">用户管理</el-checkbox>
+                </div>
+                <div>
+                  <el-checkbox v-model="checked">卡券管理 </el-checkbox>
+                </div>
+              </td>
+              <td style="width: 25%">
+                <div>
+                  <el-checkbox v-model="checked">基本配置</el-checkbox>
+                </div>
+                <div>
+                  <el-checkbox v-model="checked">接入权限</el-checkbox>
+                </div>
+              </td>
+              <td style="width: 25%">
+                <div>
+                  <el-checkbox v-model="checked">平台信息</el-checkbox>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+        </span>
       </div>
       <div class="footer">
         <el-button type="danger">提交</el-button>
-        <el-button type="info">取消</el-button>
+        <el-button type="info" @click="cancel()">取消</el-button>
       </div>
 
     </div>
@@ -50,29 +78,25 @@
 <script>
 /*eslint-disable*/
 export default {
-  props:{},
+  props:{
+    config: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   components: {},
   data(){
     return {
       input: '',
-      accountRole: '',
-      accountRoleList: [
-        {
-          value: '1',
-          label: '金毛'
-        },
-        {
-          value: '2',
-          label: '哈士奇'
-        }
-
-      ],
+      checked: false,
     }
   },
   methods:{
-    selectAccountRole(data){
-      console.log(data)
-    },
+    cancel(){
+      this.$emit('on-cancel');
+    }
   },
   created(){
   },
@@ -80,6 +104,11 @@ export default {
 </script>
 <style lang="less" scoped>
   .account-authority{
+    position: absolute;
+    background: white;
+    top: 0;
+    left: 0;
+    right: 0;
     .title-line{
       padding: 10px;
       border-bottom: 2px solid #E0E0E0;
@@ -99,18 +128,25 @@ export default {
       padding-left: 2%;
       padding-top: 20px;
       overflow: auto;
-      .item-line {
-        margin-bottom: 10px;
-        height: 40px;
-        white-space: nowrap;
-        .item-title {
+      .item{
+        margin-bottom: 20px;
+        span{
           display: inline-block;
+        }
+        .left{
           width: 100px;
-          height: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          margin-right: 10px;
           vertical-align: top;
+        }
+        .right{
+          width: ~'calc(100% - 120px)';
+          vertical-align: top;
+          div{
+            margin-bottom: 10px;
+          }
+          .table td div{
+            margin: 10px 0;
+          }
         }
       }
       .footer{

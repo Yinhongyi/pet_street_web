@@ -39,19 +39,19 @@
         <tbody>
         <tr>
           <td style="width: 10%">CGTJ1289183923829YSTY</td>
-          <td style="width: 12%">秦进辉</td>
-          <td style="width: 20%">1828921995</td>
+          <td style="width: 6%">秦进辉</td>
+          <td style="width: 10%">1828921995</td>
           <td style="width: 10%">上海市普陀区兰溪路XXXXXXXX</td>
           <td style="width: 10%">
             泰迪 x1 ；￥2000
             比熊 x1 ；￥2000
            </td>
-          <td style="width: 12%">￥4000</td>
-          <td style="width: 10%">￥4000</td>
+          <td style="width: 8%">￥4000</td>
+          <td style="width: 8%">￥4000</td>
           <td style="width: 10%">2017-5-12 18:42:44</td>
           <td style="width: 10%">2017-5-12 18:45:10</td>
-          <td style="width: 10%">已付款</td>
-          <td style="width: 30%">
+          <td style="width: 8%">已付款</td>
+          <td>
             <div class="cursor_pointer" @click="openDetailDialog()">查看</div>
           </td>
         </tr>

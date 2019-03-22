@@ -66,9 +66,16 @@ const menuList = [
     id: 99,
     children: [
       {
-        name: '账户权限',
+        name: '账户列表',
         icon: '',
-        path: '/manage/setting/account',
+        path: '/manage/setting/account-list',
+        id: 1,
+        parent_id: 99
+      },
+      {
+        name: '权限列表',
+        icon: '',
+        path: '/manage/setting/authority-list',
         id: 1,
         parent_id: 99
       },

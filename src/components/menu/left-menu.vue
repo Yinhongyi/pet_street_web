@@ -1,11 +1,20 @@
 <template>
   <div class="menu">
-    <ul v-for="(menu,index) in menuList" :key="index" :class="{'border-b': index < menuList.length - 1}">
+    <ul v-for="(menu,index) in menuList"
+        :key="index"
+        :class="{'border-b': index < menuList.length - 1,'selected': selectedMenu === menu.path}">
       <li class="first-menu" @click="handleFirstMenu(menu)">
         <span v-if="menu.icon"></span>
         {{menu.name}}
       </li>
-      <li class="second-menu" v-if="menu.children" v-for="(m,idx) in menu.children" :key="idx" @click="handleSecondMenu(m)">{{m.name}}</li>
+      <li class="second-menu"
+          v-if="menu.children"
+          v-for="(m,idx) in menu.children"
+          :key="idx"
+          :class="{'selected': selectedMenu === m.path}"
+          @click="handleSecondMenu(m)">
+        {{m.name}}
+      </li>
     </ul>
   </div>
 </template>
@@ -18,16 +27,22 @@ export default {
   data(){
     return {
       menuList: menuList,
-      parent_id: 0
+      parent_id: 0,
+      selectedMenu: '',
     }
   },
   methods:{
     handleFirstMenu(menu){
       if(this.parent_id === menu.id) return;
-      this.$router.push({path: menu.path})
+      if(menu.children&&menu.menu.length){
+        this.$router.push({path: menu.path})
+      }else{
+        this.selectedMenu = menu.path;
+      }
     },
     handleSecondMenu(m){
       this.parent_id = m.parent_id;
+      this.selectedMenu = m.path;
       this.$router.push({path: m.path})
     },
   },
@@ -57,6 +72,9 @@ export default {
       }
       li.second-menu{
         padding-left: 30px;
+      }
+      li.second-menu.selected{
+        background-color: #F55D54;
       }
 /*
       li.second-menu:hover{

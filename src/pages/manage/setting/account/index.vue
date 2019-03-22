@@ -1,5 +1,5 @@
 <template>
-  <div class="account-authority">
+  <div class="account-edit">
     <div class="title-line">账户管理</div>
     <div class="second-title">修改账户</div>
     <div class="bg-line"></div>
@@ -41,16 +41,22 @@
       </div>
       <div class="footer">
         <el-button type="danger">提交</el-button>
-        <el-button type="info">取消</el-button>
+        <el-button type="info" @click="cancel()">取消</el-button>
       </div>
-
     </div>
   </div>
 </template>
 <script>
 /*eslint-disable*/
 export default {
-  props:{},
+  props:{
+    config: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   components: {},
   data(){
     return {
@@ -73,13 +79,21 @@ export default {
     selectAccountRole(data){
       console.log(data)
     },
+    cancel(){
+      this.$emit('on-cancel');
+    }
   },
   created(){
   },
 }
 </script>
 <style lang="less" scoped>
-  .account-authority{
+  .account-edit{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
     .title-line{
       padding: 10px;
       border-bottom: 2px solid #E0E0E0;
