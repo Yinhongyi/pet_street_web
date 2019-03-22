@@ -13,10 +13,10 @@ const ajax = () => {
       config.data.version_code = process.env.VERSION_CODE||1;
       config.data.app_lang = (localStorage.lang||'').replace('-','_');
     }
-    localStorage.setItem('TOKEN_KEY', 'JIWIO81I203JJD238238923HEH392H2D32DI9UW')
+    let cookieList = document.cookie.split('Authorization=');
+    cookieList.length === 2 ? localStorage.setItem('TOKEN_KEY', cookieList[1]) : '';
 
     if(localStorage.getItem('TOKEN_KEY')){
-      // config.headers.common['TOKEN_KEY'] = 'Bearer '+localStorage.getItem('TOKEN_KEY');
       config.headers.common['TOKEN_KEY'] = localStorage.getItem('TOKEN_KEY');
     }
     return config;
