@@ -34,20 +34,21 @@ export default {
   methods:{
     handleFirstMenu(menu){
       if(this.parent_id === menu.id) return;
-      if(menu.children&&menu.menu.length){
-        this.$router.push({path: menu.path})
-      }else{
-        this.selectedMenu = menu.path;
-      }
+      this.$router.push({path: menu.path})
     },
     handleSecondMenu(m){
       this.parent_id = m.parent_id;
-      this.selectedMenu = m.path;
       this.$router.push({path: m.path})
     },
   },
   created () {
-  }
+    this.selectedMenu = this.$route.path;
+  },
+  watch: {
+    '$route.path'(value){
+      this.selectedMenu = value;
+    }
+  },
 }
 </script>
 <style lang="less" scoped>
