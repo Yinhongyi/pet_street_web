@@ -27,10 +27,12 @@
     </transition>
       <div class="tipsPage" v-if="isShowTipsPage">
         <transition name="shake">
-          <div v-if="isShowIcon">icon</div>
+          <div v-if="isShowIcon">
+            <i class="iconfont icon-check-circle-fill"></i>
+          </div>
         </transition>
         <transition name="pulse">
-          <div v-if="isShowTips">log in success</div>
+          <div v-if="isShowTips">登陆成功</div>
         </transition>
       </div>
   </div>
@@ -135,9 +137,13 @@ export default {
   .tipsPage{
     height: 100%;
     text-align: center;
-    margin-top: 100px;
+    position: relative;
+    top: ~'calc(50% - 240px)';
     div{
       margin: 20px 0;
+      .icon-check-circle-fill{
+        font-size: 160px;
+      }
     }
   }
   .disappear-enter-active, .disappear-leave-active {
