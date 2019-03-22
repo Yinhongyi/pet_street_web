@@ -74,7 +74,7 @@ export default {
       console.log(data)
     },
     logIn(){
-      localStorage.setItem('TOKEN', 'test_TOKENew34sdfiuwhd2ehdu');
+      localStorage.setItem('TOKEN_KEY', 'test_TOKENew34sdfiuwhd2ehdu');
       login_message.userData = {
         name: '用户名'
       };

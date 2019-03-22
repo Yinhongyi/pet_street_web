@@ -24,7 +24,7 @@ const routers = [
     name: 'manage',
     component: r => require.ensure([], () => r(require('@/components/layout/layout-manage.vue')), 'layout_manage'),
     redirect: to => {
-      if(login_message.TOKEN || localStorage.TOKEN) {
+      if(localStorage.TOKEN_KEY) {
         return '/manage/commodity'
       }else{
         return '/login'
@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
     // 当前已在登录页面
     next()
   } else {
-    if (login_message.TOKEN || localStorage.TOKEN) {
+    if (localStorage.TOKEN_KEY) {
       // 已登录
       next();
     } else {

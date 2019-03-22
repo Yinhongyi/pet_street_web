@@ -18,7 +18,7 @@ export default {
   },
   methods:{
     quit(){
-      localStorage.removeItem('TOKEN');
+      localStorage.removeItem('TOKEN_KEY');
       login_message.userData = {};
       this.$router.push({path: '/login'});
     }
