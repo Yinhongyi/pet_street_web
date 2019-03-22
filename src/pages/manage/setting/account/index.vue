@@ -6,7 +6,7 @@
     <div class="container">
       <div class="item-line">
         <span class="item-title">账户名称：</span>
-        <el-input :disabled="true" v-model="input" placeholder="请输入原密码"></el-input>
+        <el-input :disabled="true" v-model="input" placeholder="请输入账户名称"></el-input>
       </div>
       <div class="item-line">
         <span class="item-title">原密码：</span>
@@ -28,6 +28,17 @@
         <span class="item-title">联系方式：</span>
         <el-input v-model="input" placeholder="请输入联系方式"></el-input>
       </div>
+      <div class="item-line">
+        <span class="item-title">账户角色：</span>
+        <el-select v-model="accountRole" placeholder="请选择账户角色" @change="selectAccountRole($event)">
+          <el-option
+            v-for="item in accountRoleList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </div>
       <div class="footer">
         <el-button type="danger">提交</el-button>
         <el-button type="info">取消</el-button>
@@ -43,10 +54,25 @@ export default {
   components: {},
   data(){
     return {
-      input: ''
+      input: '',
+      accountRole: '',
+      accountRoleList: [
+        {
+          value: '1',
+          label: '金毛'
+        },
+        {
+          value: '2',
+          label: '哈士奇'
+        }
+
+      ],
     }
   },
   methods:{
+    selectAccountRole(data){
+      console.log(data)
+    },
   },
   created(){
   },

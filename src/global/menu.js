@@ -45,15 +45,30 @@ const menuList = [
     ]
   },
   {
+    name: '资金管理',
+    icon: '',
+    path: '/manage/funds',
+    id: 3,
+    children: [
+      {
+        name: '我的资金',
+        icon: '',
+        path: '/manage/funds/my',
+        id: 1,
+        parent_id: 3
+      },
+    ]
+  },
+  {
     name: '设置',
     icon: '',
-    path: '/manage/account',
+    path: '/manage/setting',
     id: 99,
     children: [
       {
         name: '账户权限',
         icon: '',
-        path: '/manage/account/authority',
+        path: '/manage/setting/account',
         id: 1,
         parent_id: 99
       },

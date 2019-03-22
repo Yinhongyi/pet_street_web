@@ -100,7 +100,7 @@
 
           <el-input v-model="input" placeholder="请输入疫苗品牌"></el-input>
 
-          <span>add icon</span>
+          <span><i class="iconfont icon-plus-circle"></i></span>
         </div>
       </div>
       <div class="item-line">
@@ -123,7 +123,7 @@
 
           <el-input v-model="input" placeholder="请输入驱虫药品牌"></el-input>
 
-          <span>add icon</span>
+          <span><i class="iconfont icon-plus-circle"></i></span>
         </div>
       </div>
       <div class="item-line">
@@ -167,7 +167,7 @@
       </div>
       <div class="item-line">
         <span class="item-title">状态切换：</span>
-        <el-button type="primary" plain>下架</el-button>
+        <button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="isSelectedDownBtn = !isSelectedDownBtn">下架</button>
         <span class="tips">因特殊情况需手动下架商品，请谨慎操作</span>
       </div>
       <div class="footer">
@@ -175,7 +175,6 @@
         <el-button type="danger">提交审核</el-button>
         <el-button type="info">取消</el-button>
       </div>
-
     </div>
   </div>
 </template>
@@ -221,6 +220,7 @@ export default {
       input: '',
       checked: true,
       imageUrl: '',
+      isSelectedDownBtn: false,
     }
   },
   methods:{
@@ -313,6 +313,16 @@ export default {
         }
         .tips{
           color: rgba(168, 168, 168, 1);
+        }
+        .down-btn{
+          border-color: #A8A8A8;
+          color: #A8A8A8;
+          background-color: white;
+        }
+        .down-btn.selected{
+          color: white;
+          background-color: #409EFF;
+          border-color: #409EFF;
         }
       }
       .editor-container{

@@ -52,7 +52,7 @@
           <td style="width: 10%">2017-5-12 18:45:10</td>
           <td style="width: 10%">已付款</td>
           <td style="width: 30%">
-            <div @click="openDetailDialog()">查看</div>
+            <div class="cursor_pointer" @click="openDetailDialog()">查看</div>
           </td>
         </tr>
         </tbody>
@@ -70,7 +70,60 @@
     </div>
 
     <el-dialog title="订单详情" :visible.sync="dialogDetailShow" v-loading="true">
-      <div>sdfasdf</div>
+      <div class="detail-content">
+        <div class="item">
+          <span class="left">订单号：</span>
+          <span class="right">201705271348551547</span>
+        </div>
+        <div class="item">
+          <span class="left">收货人名称：</span>
+          <span class="right">靳元海</span>
+        </div>
+        <div class="item">
+          <span class="left">收货人电话：</span>
+          <span class="right">18616281761</span>
+        </div>
+        <div class="item">
+          <span class="left">收货地址：</span>
+          <span class="right">上海普陀区XXXXXXXX</span>
+        </div>
+        <div class="item">
+          <span class="left">商品名称：</span>
+          <span class="right">泰迪</span>
+        </div>
+        <div class="item">
+          <span class="left">数量：</span>
+          <span class="right">2</span>
+        </div>
+        <div class="item">
+          <span class="left">邮费：</span>
+          <span class="right">300元</span>
+        </div>
+        <div class="item">
+          <span class="left">实际付款金额：</span>
+          <span class="right">2300元</span>
+        </div>
+        <div class="item">
+          <span class="left">支付方式：</span>
+          <span class="right">微信支付</span>
+        </div>
+        <div class="item">
+          <span class="left">购买人电话：</span>
+          <span class="right">XXXXXXXXXXX</span>
+        </div>
+        <div class="item">
+          <span class="left">购买时间：</span>
+          <span class="right">2017-05-27 13:48:55</span>
+        </div>
+        <div class="item">
+          <span class="left">支付时间：</span>
+          <span class="right">2017-05-27 13:49:00</span>
+        </div>
+        <div class="item">
+          <span class="left">支付信息：</span>
+          <span class="right">微信付款凭证： XXXXXXXXXXXXXXXXXXXXXXX</span>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -170,6 +223,27 @@ export default {
       .pagination{
         float: right;
         margin: 12px;
+      }
+    }
+    .detail-content{
+      .item{
+        margin-bottom: 10px;
+        span{
+          display: inline-block;
+        }
+        .left{
+          width: 100px;
+          margin-right: 10px;
+          word-break: break-all;
+          white-space: normal;
+          vertical-align: top;
+        }
+        .right{
+          width: ~'calc(100% - 110px)';
+          word-break: break-all;
+          white-space: normal;
+          vertical-align: top;
+        }
       }
     }
   }

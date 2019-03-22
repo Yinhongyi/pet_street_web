@@ -6,6 +6,8 @@ import router from './router'
 import $http from './global/$http'
 // 引入自写公共组件
 import '@/components/common'
+// 引入iconfont
+import '@/assets/css/iconfont/iconfont.css'
 
 // 按需引入elementUI
 import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker, Upload, Dialog, Loading } from 'element-ui'
