@@ -136,6 +136,7 @@
           placeholder="请输入内容"
           v-model="input">
         </el-input>
+        <!--<ueditor ref="ueditor" :config="config" @on-change="ueditorChange($event)"></ueditor>-->
       </div>
       <div class="item-line">
         <span class="item-title">缩略图：</span>
@@ -221,6 +222,18 @@ export default {
       checked: true,
       imageUrl: '',
       isSelectedDownBtn: false,
+      config: {
+          toolbars: [
+            ['fullscreen', 'source','|', 'undo', 'redo','|','bold', 'italic', 'underline', 'fontborder', 'strikethrough',
+              '|','superscript','subscript','|', 'forecolor', 'backcolor','|', 'removeformat','|', 'insertorderedlist', 'insertunorderedlist',
+              '|','selectall', 'cleardoc','fontfamily','fontsize','justifyleft','justifyright','justifycenter','justifyjustify','|',
+              'link','unlink']
+          ],
+        autoHeightEnabled: false,
+        initialContent:'',   //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
+        initialFrameWidth: null,
+        initialFrameHeight: 450,
+      }
     }
   },
   methods:{
@@ -250,6 +263,9 @@ export default {
     beforeAvatarUpload(data){
       console.log(data)
     },
+    ueditorChange(data){
+      console.log('ueditor content: ',data)
+    }
   },
   created(){
     let params = {

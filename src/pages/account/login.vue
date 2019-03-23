@@ -5,16 +5,6 @@
         <div class="logo">logo</div>
         <div class="system-title">宠物街商品管理平台</div>
         <div class="item">
-          <el-select v-model="identity" placeholder="请选择" @change="selectIdentity($event)">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="item">
           <el-input v-model="userName" placeholder="账户名"></el-input>
         </div>
         <div class="item">
