@@ -1,6 +1,8 @@
 <template>
   <div>
-    <span class="logo">logo</span>
+    <span class="logo">
+      <img src="../../../static/image/logo.png" alt="">
+    </span>
     <span class="system-title">宠物街后台管理系统</span>
     <span class="quit" @click="quit()">退出</span>
     <span class="user-name">{{login_message.userData.name}}</span>
@@ -29,10 +31,18 @@ export default {
 </script>
 <style lang="less" scoped>
   .logo{
-    padding: 16px;
+    padding: 0 16px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: middle;
+    img{
+      width: 100%;
+    }
   }
   .system-title{
     font-size: 24px;
+    vertical-align: middle;
   }
   .quit{
     float: right;

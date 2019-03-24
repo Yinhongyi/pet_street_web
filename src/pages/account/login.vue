@@ -2,7 +2,9 @@
   <div>
     <transition name="disappear">
       <div class="loginPage" v-if="isShowLoginPage">
-        <div class="logo">logo</div>
+        <div class="logo">
+          <img src="../../../static/image/logo.png" alt="">
+        </div>
         <div class="system-title">宠物街商品管理平台</div>
         <div class="item">
           <el-select v-model="identity" placeholder="请选择" @change="selectPetClassify($event)">
@@ -109,12 +111,12 @@ export default {
 <style lang="less" scoped>
   .loginPage{
     text-align: center;
-    padding: 40px 0;
-    height: 100%;
+    padding: 10% 0;
     .logo{
-      min-height: 180px;
+      height: 180px;
     }
     .system-title{
+      font-size: 24px;
       color: #F55D54;
       margin-top: 15px;
       margin-bottom: 40px;
