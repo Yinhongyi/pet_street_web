@@ -2,8 +2,10 @@
   <div class="menu">
     <ul v-for="(menu,index) in menuList"
         :key="index"
-        :class="{'border-b': index < menuList.length - 1,'selected': selectedMenu === menu.path}">
-      <li class="first-menu" @click="handleFirstMenu(menu)">
+        :class="{'border-b': index < menuList.length - 1}">
+      <li class="first-menu"
+          :class="{'selected': selectedMenu === menu.path}"
+          @click="handleFirstMenu(menu)">
         <span v-if="menu.icon"></span>
         {{menu.name}}
       </li>
@@ -70,6 +72,9 @@ export default {
       }
       li.first-menu{
         padding-left: 10px;
+      }
+      li.first-menu.selected{
+        background-color: #F55D54;
       }
       li.second-menu{
         padding-left: 30px;

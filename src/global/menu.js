@@ -106,7 +106,7 @@ const menuList = [
   {
     name: '广告管理',
     icon: '',
-    path: '/manage/ad',
+    path: '/manage/ad/list',
     id: 6,
     children: []
   },
