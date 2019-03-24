@@ -8,7 +8,7 @@
         {{menu.name}}
       </li>
       <li class="second-menu"
-          v-if="menu.children"
+          v-if="menu.children&&menu.children.length"
           v-for="(m,idx) in menu.children"
           :key="idx"
           :class="{'selected': selectedMenu === m.path}"

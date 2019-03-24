@@ -49,6 +49,7 @@ export default {
       height: 100%;
       vertical-align: top;
       background-color: #F7F7F7;
+      overflow: auto;
     }
     .right-content{
       display: inline-block;

@@ -60,6 +60,57 @@ const menuList = [
     ]
   },
   {
+    name: '审核',
+    icon: '',
+    path: '/manage/review',
+    id: 4,
+    children: [
+      {
+        name: '未审核',
+        icon: '',
+        path: '/manage/review/not',
+        id: 1,
+        parent_id: 4
+      },
+      {
+        name: '已审核',
+        icon: '',
+        path: '/manage/review/already',
+        id: 2,
+        parent_id: 4
+      },
+    ]
+  },
+  {
+    name: '分类设置',
+    icon: '',
+    path: '/manage/classify',
+    id: 5,
+    children: [
+      {
+        name: '一级分类',
+        icon: '',
+        path: '/manage/classify/first_level',
+        id: 1,
+        parent_id: 5
+      },
+      {
+        name: '二级分类',
+        icon: '',
+        path: '/manage/classify/second_level',
+        id: 2,
+        parent_id: 5
+      },
+    ]
+  },
+  {
+    name: '广告管理',
+    icon: '',
+    path: '/manage/ad',
+    id: 6,
+    children: []
+  },
+  {
     name: '设置',
     icon: '',
     path: '/manage/setting',
