@@ -7,7 +7,7 @@
         </div>
         <div class="system-title">宠物街商品管理平台</div>
         <div class="item">
-          <el-select v-model="identity" placeholder="请选择" @change="selectPetClassify($event)">
+          <el-select v-model="identity" placeholder="请选择" @change="selectIdentity($event)">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -25,6 +25,8 @@
         </div>
         <div class="item">
           <el-button type="danger" @click="logIn()">登录</el-button>
+          <el-button type="danger" @click="inputAccount()">填入账号密码</el-button>
+
         </div>
       </div>
     </transition>
@@ -76,12 +78,24 @@ export default {
     selectIdentity(data){
       console.log(data)
     },
+    inputAccount(){
+      this.userName = '18508248516';
+      this.userPassword = 'petjie2018';
+    },
     logIn(){
-      localStorage.setItem('TOKEN_KEY', 'test_TOKENew34sdfiuwhd2ehdu');
-      login_message.userData = {
-        name: '用户名'
+      let params = {
+        "mobile": this.userName,
+        "pwd": this.userPassword
       };
-      this.animationSwitch();
+      this.$http.post('/api/mgmt/mall/login', params).then((res)=>{
+        console.log(res)
+        // localStorage.setItem('TOKEN_KEY', 'test_TOKENew34sdfiuwhd2ehdu');
+        // login_message.userData = {
+        //   name: '用户名'
+        // };
+        // this.animationSwitch();
+
+      })
     },
     animationSwitch(){
       this.isShowLoginPage = false;

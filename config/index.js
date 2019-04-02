@@ -3,7 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-let api = 'https://www.piggytrip.com'
+let api = 'https://api.piggytrip.com'
 
 module.exports = {
   dev: {
