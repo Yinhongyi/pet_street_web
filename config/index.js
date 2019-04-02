@@ -15,7 +15,10 @@ module.exports = {
       '/api': {
         target: api,
         changeOrigin: true,
-        ws: true
+        ws: true,
+        pathRewrite: {
+          '^/api': ''
+        }
       }
     },
 

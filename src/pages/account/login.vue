@@ -25,8 +25,6 @@
         </div>
         <div class="item">
           <el-button type="danger" @click="logIn()">登录</el-button>
-          <el-button type="danger" @click="inputAccount()">填入账号密码</el-button>
-
         </div>
       </div>
     </transition>
@@ -78,23 +76,25 @@ export default {
     selectIdentity(data){
       console.log(data)
     },
-    inputAccount(){
-      this.userName = '18508248516';
-      this.userPassword = 'petjie2018';
-    },
     logIn(){
       let params = {
         "mobile": this.userName,
         "pwd": this.userPassword
       };
       this.$http.post('/api/mgmt/mall/login', params).then((res)=>{
-        console.log(res)
-        // localStorage.setItem('TOKEN_KEY', 'test_TOKENew34sdfiuwhd2ehdu');
-        // login_message.userData = {
-        //   name: '用户名'
-        // };
-        // this.animationSwitch();
-
+        if(res.code === 1000){
+          localStorage.setItem('TOKEN_KEY', res.data&&res.data.token);
+          login_message.userData = {
+            name: res.data&&res.data.userInfo&&res.data.userInfo.nickName
+          };
+          this.animationSwitch();
+        }
+        else if(res.code === 1002){
+          alert(res.message);
+        }
+        else{
+          alert('登陆失败');
+        }
       })
     },
     animationSwitch(){

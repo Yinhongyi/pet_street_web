@@ -18,6 +18,11 @@ const ajax = () => {
   }, function (error) {
     return Promise.reject(error);
   });
+  $http.interceptors.response.use(function (reponse) {
+    return reponse && reponse.data;
+  }, function (error) {
+    return Promise.reject(error);
+  });
   return $http;
 }
 export default ajax();
