@@ -24,8 +24,10 @@ const ajax = () => {
       _this.$message({
         message: response.data.message,
         type: 'error'
-      })
-      _this.$router.push({path: '/login'})
+      });
+      localStorage.removeItem('P_S_TOKEN_KEY');
+      localStorage.removeItem('P_S_USER_INFO');
+      _this.$router.push({path: '/login'});
     }else{
       return response.data;
     }
