@@ -136,7 +136,7 @@
           placeholder="请输入内容"
           v-model="input">
         </el-input>
-        <!--<ueditor ref="ueditor" :config="config" @on-change="ueditorChange($event)"></ueditor>-->
+        <!--<ueditor ref="ueditor" :config="editorConfig" @on-change="ueditorChange($event)"></ueditor>-->
       </div>
       <div class="item-line">
         <span class="item-title">缩略图：</span>
@@ -222,7 +222,7 @@ export default {
       checked: true,
       imageUrl: '',
       isSelectedDownBtn: false,
-      config: {
+      editorConfig: {
           toolbars: [
             ['fullscreen', 'source','|', 'undo', 'redo','|','bold', 'italic', 'underline', 'fontborder', 'strikethrough',
               '|','superscript','subscript','|', 'forecolor', 'backcolor','|', 'removeformat','|', 'insertorderedlist', 'insertunorderedlist',
@@ -268,22 +268,15 @@ export default {
     }
   },
   created(){
-    let params = {
-      "channelId": "string",
-      "channelType": "iOS001",
-      "deviceModel": "iPhone 5s / 小米4A",
-      "deviceToken": "string",
-      "deviceType": "iPhone",
-      "idfa": "string",
-      "imei": "string",
-      "latitude": "39.961405",
-      "longitude": "116.400819",
-      "mobile": "string",
-      "sysVersion": "iOS 8.0",
-      "version": "1.0.0"
-    };
-    this.$http.post('api/v2/msg/send/smscode', params).then((res)=>{
-      console.log(res)
+    this.$http.get('api/mgmt/public/features?featureType='+1+'&status='+1).then((res)=>{
+      if(res.code === 1000){
+        console.log('features:'+res.data)
+      }
+    })
+    this.$http.get('api/mgmt/public/shapes?status=1').then((res)=>{
+      if(res.code === 1000){
+        console.log('shapes:'+res.data)
+      }
     })
   },
 }

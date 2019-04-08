@@ -14,6 +14,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         target: api,
+        secure: false,
         changeOrigin: true,
         ws: true,
         pathRewrite: {

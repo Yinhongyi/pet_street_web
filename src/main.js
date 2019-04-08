@@ -10,7 +10,7 @@ import '@/components/common'
 import '@/assets/css/iconfont/iconfont.css'
 
 // 按需引入elementUI
-import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker, Upload, Dialog, Loading } from 'element-ui'
+import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker, Upload, Dialog, Loading, Message } from 'element-ui'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = $http
@@ -30,6 +30,7 @@ Vue.use(DatePicker)
 Vue.use(Upload)
 Vue.use(Dialog)
 Vue.use(Loading)
+Vue.prototype.$message = Message
 
 /* eslint-disable no-new */
 new Vue({

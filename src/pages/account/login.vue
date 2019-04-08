@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <transition name="disappear">
       <div class="loginPage" v-if="isShowLoginPage">
         <div class="logo">
@@ -7,7 +7,7 @@
         </div>
         <div class="system-title">宠物街商品管理平台</div>
         <div class="item">
-          <el-select v-model="identity" placeholder="请选择" @change="selectIdentity($event)">
+          <el-select v-model="userType" placeholder="请选择" @change="selectIdentity($event)">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -28,16 +28,16 @@
         </div>
       </div>
     </transition>
-      <div class="tipsPage" v-if="isShowTipsPage">
-        <transition name="shake">
-          <div v-if="isShowIcon">
-            <i class="iconfont icon-check-circle-fill"></i>
-          </div>
-        </transition>
-        <transition name="pulse">
-          <div v-if="isShowTips">登陆成功</div>
-        </transition>
-      </div>
+    <div class="tipsPage" v-if="isShowTipsPage">
+      <transition name="shake">
+        <div v-if="isShowIcon">
+          <i class="iconfont icon-check-circle-fill"></i>
+        </div>
+      </transition>
+      <transition name="pulse">
+        <div v-if="isShowTips">登陆成功</div>
+      </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -53,23 +53,24 @@ export default {
       isShowTipsPage: false,
       isShowIcon: false,
       isShowTips: false,
-      identity: '1',
       options: [
-        {
-          value: '1',
-          label: '管理员'
-        },
+        // {
+        //   value: '1',
+        //   label: '管理员'
+        // },
         {
           value: '2',
-          label: '企业'
+          label: '商户'
         },
         {
-          value: '3',
-          label: '平台'
+          value: '4',
+          label: '平台用户'
         }
       ],
+      userType: '2',
       userName: '',
       userPassword: '',
+      loading: false,
     }
   },
   methods:{
@@ -77,23 +78,23 @@ export default {
       console.log(data)
     },
     logIn(){
-      let params = {
-        "mobile": this.userName,
-        "pwd": this.userPassword
+      let params= {
+        mobile: this.userName,
+        pwd: this.userPassword,
+        userType: this.userType
       };
-      this.$http.post('/api/mgmt/mall/login', params).then((res)=>{
+      this.loading = true;
+      this.$http.post('api/mgmt/mall/login', params).then((res)=>{
+        this.loading = false;
         if(res.code === 1000){
-          localStorage.setItem('TOKEN_KEY', res.data&&res.data.token);
-          login_message.userData = {
-            name: res.data&&res.data.userInfo&&res.data.userInfo.nickName
-          };
+          localStorage.setItem('P_S_TOKEN_KEY', res.data&&res.data.token);
+          localStorage.setItem('P_S_USER_INFO', JSON.stringify(res.data&&res.data.userInfo || {}));
           this.animationSwitch();
-        }
-        else if(res.code === 1002){
-          alert(res.message);
-        }
-        else{
-          alert('登陆失败');
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          });
         }
       })
     },

@@ -5,27 +5,30 @@
     </span>
     <span class="system-title">宠物街后台管理系统</span>
     <span class="quit" @click="quit()">退出</span>
-    <span class="user-name">{{login_message.userData.name}}</span>
+    <span class="user-info">
+      <img :src="userInfo.avartar">
+      <span>{{userInfo.nickName}}</span>
+    </span>
   </div>
 </template>
 <script>
 /*eslint-disable*/
-import {login_message} from '@/global/login_message'
 export default {
   name: 'Nav',
   data(){
     return {
-      login_message: login_message,
+      userInfo: {}
     }
   },
   methods:{
     quit(){
-      localStorage.removeItem('TOKEN_KEY');
-      login_message.userData = {};
+      localStorage.removeItem('P_S_TOKEN_KEY');
+      localStorage.removeItem('P_S_USER_INFO');
       this.$router.push({path: '/login'});
     }
   },
   created () {
+    this.userInfo = JSON.parse(localStorage.getItem('P_S_USER_INFO') || '{}')
   }
 }
 </script>
@@ -54,10 +57,17 @@ export default {
     color: white;
     cursor: pointer;
   }
-  .user-name{
+  .user-info{
     float: right;
     color: #101010;
     margin-right: 20px;
     padding: 0 10px;
+    img{
+      width: 30px;
+      height: 30px;
+      position: relative;
+      top: 8px;
+      margin-right: 10px;
+    }
   }
 </style>
