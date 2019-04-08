@@ -1,4 +1,5 @@
 /* eslint-disable */
+import _this from '../main'
 import axios from 'axios';
 
 const ajax = () => {
@@ -19,7 +20,15 @@ const ajax = () => {
     return Promise.reject(error);
   });
   $http.interceptors.response.use(function (response) {
-    return response.data;
+    if(response.data.code === 1001){
+      _this.$message({
+        message: response.data.message,
+        type: 'error'
+      })
+      _this.$router.push({path: '/login'})
+    }else{
+      return response.data;
+    }
   }, function (error) {
     return Promise.reject(error);
   });

@@ -33,9 +33,11 @@ Vue.use(Loading)
 Vue.prototype.$message = Message
 
 /* eslint-disable no-new */
-new Vue({
+let vue = new Vue({
   el: '#app',
   router,
   components: { App },
   template: '<App/>'
 })
+
+export default vue
