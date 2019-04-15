@@ -278,6 +278,19 @@ export default {
         console.log('shapes:'+res.data)
       }
     })
+    let params = {
+      "characteristic": "1,2,3",
+      "features": "1,2,3",
+      "name": "狗狗",
+      "pid": 0,
+      "shapeId": 1,
+      "thumbnail": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2259376396,2250852130&fm=27&gp=0.jpg"
+    };
+    this.$http.post('api/mgmt//platform/classific/save', params).then((res)=>{
+      if(res.code === 1000){
+        console.log('classific:'+res.data)
+      }
+    })
   },
 }
 </script>
