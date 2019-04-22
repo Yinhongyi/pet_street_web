@@ -29,7 +29,7 @@ const ajax = () => {
       localStorage.removeItem('P_S_USER_INFO');
       _this.$router.push({path: '/login'});
     }else{
-      return response.data;
+      return response.data || {};
     }
   }, function (error) {
     return Promise.reject(error);

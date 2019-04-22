@@ -142,29 +142,13 @@
         <span class="item-title">缩略图：</span>
       </div>
       <div class="editor-container">
-        <el-upload
-          class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <pet-upload @on-success="uploadSmallImage"></pet-upload>
       </div>
       <div class="item-line">
         <span class="item-title" style="overflow: visible">轮播顶图/视频：</span>
       </div>
       <div class="editor-container">
-        <el-upload
-          class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <pet-upload v-for="(item,index) in swiperImgList" :key="index" @on-success="uploadSwiperImage($event,item)"></pet-upload>
       </div>
       <div class="item-line">
         <span class="item-title">状态切换：</span>
@@ -181,6 +165,7 @@
 </template>
 <script>
 /*eslint-disable*/
+const token = localStorage.getItem('P_S_TOKEN_KEY');
 export default {
   props:{
     commodityData: {
@@ -233,7 +218,14 @@ export default {
         initialContent:'',   //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
         initialFrameWidth: null,
         initialFrameHeight: 450,
-      }
+      },
+      headerToken: token,
+      uploadingImage: false,
+      swiperImgList: [
+        {
+          imgUrl: ''
+        }
+      ],
     }
   },
   methods:{
@@ -255,42 +247,19 @@ export default {
       console.log(date.toJSON().split('T')[1].split('.')[0])
       console.log(date)
     },
-    //上传组件:上传成功
-    handleAvatarSuccess(data){
-      console.log(data)
-    },
-    //上传组件:上传之前,使用此方法限制用户上传的图片格式和大小
-    beforeAvatarUpload(data){
-      console.log(data)
-    },
     ueditorChange(data){
       console.log('ueditor content: ',data)
-    }
+    },
+    uploadSmallImage(data){
+      console.log(data);
+    },
+    uploadSwiperImage(data,item){
+      item.imgUrl = data.imageSmallUrl;
+      this.swiperImgList.length < 5 ? this.swiperImgList.push({imgUrl:''}) : '';
+    },
   },
   created(){
-    this.$http.get('api/mgmt/public/features?featureType='+1+'&status='+1).then((res)=>{
-      if(res.code === 1000){
-        console.log('features:'+res.data)
-      }
-    })
-    this.$http.get('api/mgmt/public/shapes?status=1').then((res)=>{
-      if(res.code === 1000){
-        console.log('shapes:'+res.data)
-      }
-    })
-    let params = {
-      "characteristic": "1,2,3",
-      "features": "1,2,3",
-      "name": "狗狗",
-      "pid": 0,
-      "shapeId": 1,
-      "thumbnail": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2259376396,2250852130&fm=27&gp=0.jpg"
-    };
-    this.$http.post('api/mgmt//platform/classific/save', params).then((res)=>{
-      if(res.code === 1000){
-        console.log('classific:'+res.data)
-      }
-    })
+    // console.log(this.$store.state.featureList)
   },
 }
 </script>

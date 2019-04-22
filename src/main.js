@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import $http from './global/$http'
 // 引入自写公共组件
 import '@/components/common'
@@ -10,7 +11,7 @@ import '@/components/common'
 import '@/assets/css/iconfont/iconfont.css'
 
 // 按需引入elementUI
-import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker, Upload, Dialog, Loading, Message } from 'element-ui'
+import { Button, Select, Option, Input, Pagination, Radio, RadioGroup, Checkbox, CheckboxButton, DatePicker, Upload, Dialog, Loading, Message, Notification } from 'element-ui'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = $http
@@ -31,10 +32,12 @@ Vue.use(Upload)
 Vue.use(Dialog)
 Vue.use(Loading)
 Vue.prototype.$message = Message
+Vue.prototype.$notify = Notification
 
 /* eslint-disable no-new */
 let vue = new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

@@ -5,27 +5,19 @@
       <div class="item">
         <span class="left">一级分类：</span>
         <span class="right">
-          <el-input v-model="input" placeholder="请输入一级分类名称"></el-input>
+          <el-input v-model="firstClassifyName" placeholder="请输入一级分类名称"></el-input>
         </span>
       </div>
       <div class="item">
         <span class="left">缩略图：</span>
         <span class="right">
-          <el-upload
-            class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          <pet-upload @on-success="uploadSmallImage"></pet-upload>
         </span>
       </div>
 
       <div class="footer">
-        <el-button type="danger">确认添加</el-button>
-        <el-button type="info" @click="cancel()">取消</el-button>
+        <el-button type="danger" @click="confirmAdd">确认添加</el-button>
+        <el-button type="info" @click="quit">取消</el-button>
       </div>
     </div>
   </div>
@@ -44,31 +36,49 @@ export default {
   components: {},
   data(){
     return {
-      input: '',
-      accountRole: '',
-      accountRoleList: [
-        {
-          value: '1',
-          label: '金毛'
-        },
-        {
-          value: '2',
-          label: '哈士奇'
-        }
-
-      ],
+      firstClassifyName: '',
       imageUrl: '',
     }
   },
   methods:{
-    selectAccountRole(data){
-      console.log(data)
+    quit(){
+      this.firstClassifyName = '';
+      this.imageUrl = '';
+      this.$emit('on-quit');
     },
-    cancel(){
-      this.$emit('on-cancel');
+    uploadSmallImage(data){
+      this.imageUrl = data.imageSmallUrl;
     },
-    handleAvatarSuccess(){},
-    beforeAvatarUpload(){},
+    confirmAdd(){
+      if(!this.firstClassifyName){
+        this.$message({
+          message: '请填写一级分类名称',
+          type: 'error'
+        })
+        return
+      }
+      if(!this.imageUrl){
+        this.$message({
+          message: '请上传图片作为缩略图',
+          type: 'error'
+        })
+        return
+      }
+      let params = {
+        "name": this.firstClassifyName,
+        "thumbnail": this.imageUrl
+      }
+      this.$http.post('api/mgmt/platform/classific/persistent',params).then((res)=>{
+        if(res.code === 1000){
+          this.$emit('on-quit')
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    }
   },
   created(){
   },

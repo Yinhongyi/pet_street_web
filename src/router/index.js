@@ -1,7 +1,8 @@
 /*eslint-disable*/
 import Vue from 'vue'
 import Router from 'vue-router'
-import {login_message} from '../global/login_message'
+import $http from '../global/$http'
+import $store from '../store'
 
 Vue.use(Router)
 
@@ -55,7 +56,40 @@ router.beforeEach((to, from, next) => {
   } else {
     if (localStorage.P_S_TOKEN_KEY) {
       // 已登录
-      next();
+      if($store.state.hasUpdateFeature&&$store.state.hasUpdateCharacteristic&&$store.state.hasUpdateShapes){
+        next()
+        return
+      }
+      let getFeaturesList = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/features?featureType=0&status=0').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateFeatureList', res.data)
+            resolve()
+          }
+        })
+      })
+      let getCharacteristicList = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/features?featureType=1&status=0').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateCharacteristicList', res.data)
+            resolve()
+          }
+        })
+      })
+      let getShapes = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/shapes?status=0').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateShapesList', res.data)
+            resolve()
+          }
+        })
+      })
+      Promise.all([getFeaturesList,getCharacteristicList,getShapes]).then(()=>{
+        next();
+      })
+        .catch(()=>{
+
+      })
     } else {
       // 未登录
       next({

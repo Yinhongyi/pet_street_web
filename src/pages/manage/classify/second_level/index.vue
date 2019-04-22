@@ -58,7 +58,7 @@
       </el-pagination>
     </div>
 
-    <new-or-edit v-if="isShowNewSecondClassify" :config="classifyData" @on-cancel="isShowNewSecondClassify = false"></new-or-edit>
+    <new-or-edit v-if="isShowNewSecondClassify" :config="classifyData" @on-quit="isShowNewSecondClassify = false"></new-or-edit>
   </div>
 </template>
 <script>

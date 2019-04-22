@@ -28,7 +28,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <tr v-for="(item,index) in firstClassifyList" :key="index">
           <td style="width: 8%">1</td>
           <td style="width: 20%">图片</td>
           <td style="width: 20%">狗狗</td>
@@ -51,7 +51,7 @@
         :total="1000">
       </el-pagination>
     </div>
-    <new-or-edit v-if="isShowNewFirstClassify" :config="classifyData" @on-cancel="isShowNewFirstClassify = false"></new-or-edit>
+    <new-or-edit v-if="isShowNewFirstClassify" :config="classifyData" @on-quit="refreshList()"></new-or-edit>
   </div>
 </template>
 <script>
@@ -62,6 +62,7 @@ export default {
   components: {newOrEdit},
   data(){
     return {
+      firstClassifyList: [],
       input: '',
       filterStatus: '',
       statusConditions: [
@@ -97,8 +98,17 @@ export default {
 
     },
     //获取商品列表
-    getCommodityList(){
+    getFirstClassifyList(){
+      this.$http.get('api/mgmt/public/classific/1&status=0').then((res)=>{
+        if(res.code === 1000){
 
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
     },
     //分页器页码改变
     handleSizeChange(data){
@@ -109,9 +119,13 @@ export default {
     },
     edit(){},
     del(){},
+    refreshList(){
+      this.isShowNewFirstClassify = false;
+      this.getFirstClassifyList();
+    },
   },
   created(){
-    this.getCommodityList();
+    this.getFirstClassifyList();
   },
 }
 </script>

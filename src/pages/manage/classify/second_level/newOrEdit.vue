@@ -24,15 +24,7 @@
       <div class="item">
         <span class="left">缩略图：</span>
         <span class="right">
-          <el-upload
-            class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          <pet-upload @on-success="uploadSmallImage"></pet-upload>
         </span>
       </div>
       <div class="item">
@@ -75,8 +67,8 @@
       </div>
 
       <div class="footer">
-        <el-button type="danger">确认添加</el-button>
-        <el-button type="info" @click="cancel()">取消</el-button>
+        <el-button type="danger" @click="confirmAdd">确认添加</el-button>
+        <el-button type="info" @click="quit">取消</el-button>
       </div>
     </div>
   </div>
@@ -116,11 +108,32 @@ export default {
     selectAccountRole(data){
       console.log(data)
     },
-    cancel(){
-      this.$emit('on-cancel');
+    quit(){
+      this.$emit('on-quit');
     },
-    handleAvatarSuccess(){},
-    beforeAvatarUpload(){},
+    uploadSmallImage(data){},
+    confirmAdd(){
+      let params = {
+        "characteristic": "1,2,3",
+        "features": "1,2,3",
+        "id": 0,
+        "name": "狗狗",
+        "pid": 0,
+        "shapeId": 1,
+        "thumbnail": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2259376396,2250852130&fm=27&gp=0.jpg"
+      }
+      this.$http.post('api/mgmt/platform/classific/persistent',params).then((res)=>{
+        if(res.code === 1000){
+          this.$emit('on-quit')
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+
+    },
   },
   created(){
   },
