@@ -10,9 +10,12 @@
                  :on-progress="handleProgress"
                  :on-error="handleError"
                  :before-upload="beforeUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+        <img v-if="imgUrl || imageUrl" :src="imgUrl || imageUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
+    </div>
+    <div v-if="mode === 'multiple'">
+      multiple
     </div>
   </div>
 </template>
@@ -32,11 +35,22 @@ export default {
     type: {
       type: String,
       default: 'image'
-    }
+    },
+    imgUrl: {
+      type: String,
+      default: ''
+    },
+    fileList: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
   },
   data(){
     return {
       imageUrl: '',
+      imageUrlList: [],
       headerToken: token,
       uploading: false,
     }
@@ -53,7 +67,6 @@ export default {
           type: 'error'
         })
       }
-      console.log('upload success:',res.data)
     },
     handleError(res){
       this.uploading = true;
@@ -91,16 +104,21 @@ export default {
       }
       return typeVerification&&sizeVerification
     },
+    handlePreview(){},
+    handleRemove(){},
+  },
+  created(){
+    this.imageUrlList = this.fileList;
   },
 }
 </script>
 <style lang="less" scoped>
 .pet-upload{
-  display: inline-block;
-  padding: 0 12px 12px 0;
+  /*display: inline-block;*/
+  padding: 4px 0 12px 0;
   vertical-align: top;
   div{
-    display: inline-block;
+    /*display: inline-block;*/
   }
   .uploader{
     display: inline-block;

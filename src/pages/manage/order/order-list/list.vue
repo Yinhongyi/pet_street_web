@@ -37,7 +37,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <tr v-for="(item,index) in orderList" :key="index">
           <td style="width: 10%">CGTJ1289183923829YSTY</td>
           <td style="width: 6%">秦进辉</td>
           <td style="width: 10%">1828921995</td>
@@ -52,7 +52,7 @@
           <td style="width: 10%">2017-5-12 18:45:10</td>
           <td style="width: 8%">已付款</td>
           <td>
-            <div class="cursor_pointer" @click="openDetailDialog()">查看</div>
+            <div class="cursor_pointer" @click="openDetailDialog(item.id)">查看</div>
           </td>
         </tr>
         </tbody>
@@ -134,6 +134,7 @@ export default {
   components: {},
   data(){
     return {
+      orderList: [],
       filterStatus: '',
       statusConditions: [
         {
@@ -160,6 +161,8 @@ export default {
       currentPage: 1,
       dialogDetailShow: false,
       currentDetail: '',
+      beginCreateTime: '',
+      endCreateTime: '',
     }
   },
   methods:{
@@ -169,7 +172,22 @@ export default {
     },
     //获取订单列表
     getOrderList(){
-
+      // WAIT_FOR_PAY(待付款),CANCEL,PAYING(已取消),WAIT_FOR_DELIVERY(待发货),DELIVERED(已发货),RECEIVED(已收货),EVALUATED(已评价),FINISH(已完成)
+      let params = {
+        "beginCreateTime": this.beginCreateTime,
+        "endCreateTime": this.endCreateTime,
+        "orderNo": "",
+        "pageNum": this.currentPage,
+        "pageSize": 10,
+        "status": [
+          // "WAIT_FOR_PAY", "CANCEL", "PAYING", "WAIT_FOR_DELIVERY", "DELIVERED", "RECEIVED", "EVALUATED", "FINISH"
+        ]
+      };
+      this.$http.post('api/mgmt/mall/query', params).then((res)=>{
+        if(res.code === 1000){
+          console.log(res)
+        }
+      })
     },
     //分页器页码改变
     handleSizeChange(data){

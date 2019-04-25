@@ -61,25 +61,25 @@ router.beforeEach((to, from, next) => {
         return
       }
       let getFeaturesList = new Promise((resolve, reject)=>{
-        $http.get('api/mgmt/public/features?featureType=0&status=0').then((res)=>{
+        $http.get('api/mgmt/public/dict/featuresType').then((res)=>{
           if(res.code === 1000){
-            $store.commit('updateFeatureList', res.data)
+            $store.commit('updateFeatureList', res.data.dictList)
             resolve()
           }
         })
       })
       let getCharacteristicList = new Promise((resolve, reject)=>{
-        $http.get('api/mgmt/public/features?featureType=1&status=0').then((res)=>{
+        $http.get('api/mgmt/public/dict/traitType').then((res)=>{
           if(res.code === 1000){
-            $store.commit('updateCharacteristicList', res.data)
+            $store.commit('updateCharacteristicList', res.data.dictList)
             resolve()
           }
         })
       })
       let getShapes = new Promise((resolve, reject)=>{
-        $http.get('api/mgmt/public/shapes?status=0').then((res)=>{
+        $http.get('api/mgmt/public/dict/classificShape').then((res)=>{
           if(res.code === 1000){
-            $store.commit('updateShapesList', res.data)
+            $store.commit('updateShapesList', res.data.dictList)
             resolve()
           }
         })

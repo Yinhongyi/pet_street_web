@@ -1,41 +1,38 @@
 <template>
   <div class="classify-first">
-    <!--<div class="title-line">搜索条件</div>-->
     <div class="new-first-classify">
-      <!--<el-input v-model="input" placeholder="请输入商品编号"></el-input>-->
-      <el-button type="danger" @click="isShowNewFirstClassify = true">新增一级分类</el-button>
-
-      <!--
-            <el-select v-model="filterStatus" placeholder="请选择" @change="selectFilterStatus($event)">
-              <el-option
-                v-for="item in statusConditions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-      -->
+      <el-button type="danger" @click="newFirstClassify">新增一级分类</el-button>
+      <el-select v-model="filterStatus" placeholder="请选择" @change="getFirstClassifyList()">
+        <el-option
+          v-for="item in statusConditions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </div>
     <div class="list-table">
-      <table class="table" v-loading="false">
+      <table class="table" v-loading="loading">
         <thead>
         <tr>
           <th>序号</th>
           <th>缩略图</th>
           <th>一级分类</th>
-          <th>创建时间</th>
+          <!--<th>创建时间</th>-->
           <th>操作</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="(item,index) in firstClassifyList" :key="index">
-          <td style="width: 8%">1</td>
-          <td style="width: 20%">图片</td>
-          <td style="width: 20%">狗狗</td>
-          <td style="width: 20%">2019-03-12</td>
+          <td style="width: 8%">{{index+1}}</td>
           <td style="width: 20%">
-            <div class="color-green cursor_pointer" @click="edit()">修改</div>
-            <div class="color-red cursor_pointer" @click="del()">删除</div>
+            <img class="img-in-table" :src="item.thumbnail">
+          </td>
+          <td style="width: 20%">{{item.name}}</td>
+          <!--<td style="width: 20%">{{item.createTime}}</td>-->
+          <td style="width: 20%">
+            <div class="color-green cursor_pointer" @click="edit(item)">修改</div>
+            <div class="color-red cursor_pointer" @click="del(item)">删除</div>
           </td>
         </tr>
         </tbody>
@@ -62,46 +59,40 @@ export default {
   components: {newOrEdit},
   data(){
     return {
-      firstClassifyList: [],
-      input: '',
-      filterStatus: '',
+      filterStatus: '0',
       statusConditions: [
         {
-          value: 0,
-          label: '全部'
+          value: '0',
+          label: '使用中'
         },
         {
-          value: 1,
-          label: '未售出'
+          value: '1',
+          label: '审核中'
         },
         {
-          value: 2,
-          label: '已售出'
-        },
-        {
-          value: 3,
-          label: '交易中'
-        },
-        {
-          value: 4,
-          label: '退回'
+          value: '2',
+          label: '停用中'
         },
       ],
+      firstClassifyList: [],
       currentPage: 1,
+      loading: false,
       isShowNewFirstClassify: false,
       classifyData: {}
     }
   },
   methods:{
-    //选择过滤状态
-    selectFilterStatus(data){
-
+    newFirstClassify(){
+      this.classifyData = {};
+      this.isShowNewFirstClassify = true;
     },
     //获取商品列表
     getFirstClassifyList(){
-      this.$http.get('api/mgmt/public/classific/1&status=0').then((res)=>{
+      this.loading = true;
+      this.$http.get('api/mgmt/public/classific/1?status='+this.filterStatus).then((res)=>{
+        this.loading = false;
         if(res.code === 1000){
-
+          this.firstClassifyList = res.data;
         }else{
           this.$message({
             message: res.message,
@@ -117,8 +108,32 @@ export default {
     handleCurrentChange(data){
 
     },
-    edit(){},
-    del(){},
+    edit(item){
+      this.classifyData = item;
+      this.isShowNewFirstClassify = true;
+    },
+    del(item){
+      let params = {
+        ids: [item.id]
+      }
+      this.loading = true;
+      // todo
+      this.$http.delete('api/mgmt/platform/classific/del',{data: params}).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.getFirstClassifyList()
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
     refreshList(){
       this.isShowNewFirstClassify = false;
       this.getFirstClassifyList();
@@ -157,6 +172,12 @@ export default {
     }
     .list-table{
       overflow: auto;
+      table{
+        .img-in-table{
+          width: 80px;
+          height: 80px;
+        }
+      }
       .pagination{
         float: right;
         margin: 12px;

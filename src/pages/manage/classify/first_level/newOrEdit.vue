@@ -1,5 +1,5 @@
 <template>
-  <div class="new-or-edit-first-classify">
+  <div class="new-or-edit-first-classify" v-loading="loading">
     <div class="title-line">新增分类</div>
     <div class="container">
       <div class="item">
@@ -11,12 +11,12 @@
       <div class="item">
         <span class="left">缩略图：</span>
         <span class="right">
-          <pet-upload @on-success="uploadSmallImage"></pet-upload>
+          <pet-upload :imgUrl="imageUrl" @on-success="uploadSmallImage"></pet-upload>
         </span>
       </div>
 
       <div class="footer">
-        <el-button type="danger" @click="confirmAdd">确认添加</el-button>
+        <el-button type="danger" @click="confirm">确认{{config&&config.id?'更改':'添加'}}</el-button>
         <el-button type="info" @click="quit">取消</el-button>
       </div>
     </div>
@@ -36,8 +36,10 @@ export default {
   components: {},
   data(){
     return {
+      loading: false,
       firstClassifyName: '',
       imageUrl: '',
+      fileList: [],
     }
   },
   methods:{
@@ -49,7 +51,7 @@ export default {
     uploadSmallImage(data){
       this.imageUrl = data.imageSmallUrl;
     },
-    confirmAdd(){
+    confirm(){
       if(!this.firstClassifyName){
         this.$message({
           message: '请填写一级分类名称',
@@ -64,11 +66,20 @@ export default {
         })
         return
       }
+      this.loading = true;
+      if(this.config&&this.config.id){
+        this.updateFirstClassify()
+      }else{
+        this.addFirstClassify()
+      }
+    },
+    addFirstClassify(){
       let params = {
         "name": this.firstClassifyName,
-        "thumbnail": this.imageUrl
+        "thumbnail": this.imageUrl,
       }
-      this.$http.post('api/mgmt/platform/classific/persistent',params).then((res)=>{
+      this.$http.post('api/mgmt/platform/classific/save',params).then((res)=>{
+        this.loading = false;
         if(res.code === 1000){
           this.$emit('on-quit')
         }else{
@@ -78,9 +89,45 @@ export default {
           })
         }
       })
-    }
+    },
+    updateFirstClassify(){
+      let params = {
+        "name": this.firstClassifyName,
+        "thumbnail": this.imageUrl,
+        "id": this.config.id,
+      }
+      this.$http.put('api/mgmt/platform/classific/update',params).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.$emit('on-quit')
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    getDetailData(id){
+      this.loading = true;
+      this.$http.get('api/mgmt/public/classific/info/'+ id).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.firstClassifyName = res.data.name;
+          this.imageUrl = res.data.thumbnail;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
   },
   created(){
+    if(this.config&&this.config.id){
+      this.getDetailData(this.config.id)
+    }
   },
 }
 </script>

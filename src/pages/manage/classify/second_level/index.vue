@@ -1,23 +1,18 @@
 <template>
   <div class="classify-second">
-    <!--<div class="title-line">搜索条件</div>-->
     <div class="new-second-classify">
-      <!--<el-input v-model="input" placeholder="请输入商品编号"></el-input>-->
-      <el-button type="danger" @click="isShowNewSecondClassify = true">新增二级分类</el-button>
-
-      <!--
-            <el-select v-model="filterStatus" placeholder="请选择" @change="selectFilterStatus($event)">
-              <el-option
-                v-for="item in statusConditions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-      -->
+      <el-button type="danger" @click="newSecondClassify">新增二级分类</el-button>
+      <el-select v-model="filterStatus" placeholder="请选择" @change="getSecondClassifyList()">
+        <el-option
+          v-for="item in statusConditions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </div>
     <div class="list-table">
-      <table class="table" v-loading="false">
+      <table class="table" v-loading="loading">
         <thead>
         <tr>
           <th>序号</th>
@@ -26,22 +21,24 @@
           <th>体型</th>
           <th>功能</th>
           <th>特点</th>
-          <th>创建时间</th>
+          <!--<th>创建时间</th>-->
           <th>操作</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td style="width: 8%">1</td>
-          <td style="width: 12%">图片</td>
-          <td style="width: 10%">比熊</td>
-          <td style="width: 10%">小型</td>
-          <td style="width: 10%">家庭犬</td>
-          <td style="width: 20%">聪明/粘人/不掉毛/不爱叫</td>
-          <td style="width: 10%">2019-03-12</td>
+        <tr v-for="(item,index) in secondClassifyList" :key="index">
+          <td style="width: 8%">{{index + 1}}</td>
+          <td style="width: 12%">
+            <img class="img-in-table" :src="item.thumbnail">
+          </td>
+          <td style="width: 10%">{{item.name}}</td>
+          <td style="width: 10%">{{item.shapeName}}</td>
+          <td style="width: 10%">{{item.featuresNames}}</td>
+          <td style="width: 20%">{{item.characteristicNames}}</td>
+          <!--<td style="width: 10%">{{item.createTime}}</td>-->
           <td style="width: 20%">
-            <div class="color-green cursor_pointer" @click="edit()">修改</div>
-            <div class="color-red cursor_pointer" @click="del()">删除</div>
+            <div class="color-green cursor_pointer" @click="edit(item)">修改</div>
+            <div class="color-red cursor_pointer" @click="del(item)">删除</div>
           </td>
         </tr>
         </tbody>
@@ -58,7 +55,7 @@
       </el-pagination>
     </div>
 
-    <new-or-edit v-if="isShowNewSecondClassify" :config="classifyData" @on-quit="isShowNewSecondClassify = false"></new-or-edit>
+    <new-or-edit v-if="isShowNewSecondClassify" :config="classifyData"  @on-quit="refreshList()"></new-or-edit>
   </div>
 </template>
 <script>
@@ -69,43 +66,47 @@ export default {
   components: {newOrEdit},
   data(){
     return {
-      input: '',
-      filterStatus: '',
+      filterStatus: '0',
       statusConditions: [
         {
-          value: 0,
-          label: '全部'
+          value: '0',
+          label: '使用中'
         },
         {
-          value: 1,
-          label: '未售出'
+          value: '1',
+          label: '审核中'
         },
         {
-          value: 2,
-          label: '已售出'
-        },
-        {
-          value: 3,
-          label: '交易中'
-        },
-        {
-          value: 4,
-          label: '退回'
+          value: '2',
+          label: '停用中'
         },
       ],
+      secondClassifyList: [],
+      loading: false,
       currentPage: 1,
       isShowNewSecondClassify: false,
       classifyData: {},
     }
   },
   methods:{
-    //选择过滤状态
-    selectFilterStatus(data){
-
+    newSecondClassify(){
+      this.isShowNewSecondClassify = true;
+      this.classifyData = {};
     },
     //获取商品列表
-    getCommodityList(){
-
+    getSecondClassifyList(){
+      this.loading = true;
+      this.$http.get('api/mgmt/public/classific/2?status='+this.filterStatus).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.secondClassifyList = res.data
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
     },
     //分页器页码改变
     handleSizeChange(data){
@@ -114,14 +115,39 @@ export default {
     handleCurrentChange(data){
 
     },
-    filterSearch(){
-
+    edit(item){
+      this.classifyData = item;
+      this.isShowNewSecondClassify = true;
     },
-    edit(){},
-    del(){},
+    del(item){
+      let params = {
+        ids: [item.id]
+      }
+      this.loading = true;
+
+      this.$http.delete('api/mgmt/platform/classific/del',{data:params}).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          this.getSecondClassifyList()
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    refreshList(){
+      this.isShowNewSecondClassify = false;
+      this.getSecondClassifyList();
+    },
   },
   created(){
-    this.getCommodityList();
+    this.getSecondClassifyList();
   },
 }
 </script>

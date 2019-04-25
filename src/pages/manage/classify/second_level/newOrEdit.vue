@@ -1,41 +1,47 @@
 <template>
-  <div class="new-or-edit-second-classify">
+  <div class="new-or-edit-second-classify" v-loading="loading">
     <div class="title-line">新增分类</div>
     <div class="container">
       <div class="item">
         <span class="left">一级分类：</span>
         <span class="right">
-          <el-select v-model="firstClassify" placeholder="请选择" @change="selectPetClassify($event)">
+          <el-select v-model="pid" placeholder="请选择" @change="selectPetClassify($event)">
             <el-option
               v-for="item in firstClassifyList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
             </el-option>
           </el-select>
         </span>
       </div>
       <div class="item">
-        <span class="left">一级分类：</span>
+        <span class="left">二级分类：</span>
         <span class="right">
-          <el-input v-model="input" placeholder="请输入需要添加的二级分类名称"></el-input>
+          <el-input v-model="secondClassifyName" placeholder="请输入需要添加的二级分类名称"></el-input>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">是否热门：</span>
+        <span class="right">
+          <el-checkbox label="热门" v-model="hot"></el-checkbox>
         </span>
       </div>
       <div class="item">
         <span class="left">缩略图：</span>
         <span class="right">
-          <pet-upload @on-success="uploadSmallImage"></pet-upload>
+          <pet-upload :imgUrl="imageUrl" @on-success="uploadSmallImage"></pet-upload>
         </span>
       </div>
       <div class="item">
         <span class="left">体型：</span>
         <span class="right">
-          <el-select v-model="firstClassify" placeholder="请选择" @change="selectPetClassify($event)">
+          <el-select v-model="petShape" placeholder="请选择" @change="selectPetShape($event)">
             <el-option
-              v-for="item in firstClassifyList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in shapesList"
+              :key="item.dictValue"
+              :label="item.dictLabel"
+              :value="item.dictValue">
             </el-option>
           </el-select>
         </span>
@@ -43,31 +49,18 @@
       <div class="item">
         <span class="left">功能：</span>
         <span class="right">
-          <el-checkbox v-model="checked" label="家庭犬"></el-checkbox>
-          <el-checkbox v-model="checked" label="玩具犬"></el-checkbox>
-          <el-checkbox v-model="checked" label="工作犬"></el-checkbox>
-          <el-checkbox v-model="checked" label="梗类犬"></el-checkbox>
-          <el-checkbox v-model="checked" label="牧羊犬"></el-checkbox>
-          <el-checkbox v-model="checked" label="狩猎犬"></el-checkbox>
-          <el-checkbox v-model="checked" label="枪猎犬"></el-checkbox>
+          <el-checkbox v-for="(item,index) in featureList" :key="index" :label="item.dictLabel" v-model="item.isChecked" @change="checkFeature($event,item)"></el-checkbox>
         </span>
       </div>
       <div class="item">
         <span class="left">特点：</span>
         <span class="right">
-          <el-checkbox v-model="checked" label="聪明"></el-checkbox>
-          <el-checkbox v-model="checked" label="粘人"></el-checkbox>
-          <el-checkbox v-model="checked" label="不掉毛"></el-checkbox>
-          <el-checkbox v-model="checked" label="不爱叫"></el-checkbox>
-          <el-checkbox v-model="checked" label="友善"></el-checkbox>
-          <el-checkbox v-model="checked" label="会看家"></el-checkbox>
-          <el-checkbox v-model="checked" label="耐热"></el-checkbox>
-          <el-checkbox v-model="checked" label="易训"></el-checkbox>
+          <el-checkbox v-for="(item,index) in characteristicList" :key="index" :label="item.dictLabel" v-model="item.isChecked" @change="checkCharacteristic($event,item)"></el-checkbox>
         </span>
       </div>
 
       <div class="footer">
-        <el-button type="danger" @click="confirmAdd">确认添加</el-button>
+        <el-button type="danger" @click="confirm">确认{{config&&config.id?'更改':'添加'}}</el-button>
         <el-button type="info" @click="quit">取消</el-button>
       </div>
     </div>
@@ -86,43 +79,121 @@ export default {
   },
   components: {},
   data(){
+    let _this = this;
     return {
-      input: '',
-      firstClassify: '',
-      firstClassifyList: [
-        {
-          value: '1',
-          label: '金毛'
-        },
-        {
-          value: '2',
-          label: '哈士奇'
-        }
-
-      ],
+      pid: '',
+      secondClassifyName: '',
       imageUrl: '',
-      checked: false,
+      petShape: '',
+      petFeature: '',
+      petCharacteristic: '',
+      firstClassifyList: [],
+      featureList: _this.$store.state.featureList,
+      characteristicList: _this.$store.state.characteristicList,
+      shapesList: _this.$store.state.shapesList,
+      selectedFeatureList: [],
+      selectedCharacteristicList: [],
+      hot: false,
+      loading: false,
     }
   },
   methods:{
-    selectAccountRole(data){
-      console.log(data)
+    getFirstClassifyList(){
+      this.$http.get('api/mgmt/public/classific/1?status=0').then((res)=>{
+        if(res.code === 1000){
+          this.firstClassifyList = res.data;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    selectPetClassify(data){
+      // console.log(data)
+    },
+    selectPetShape(data){
+      // console.log(data)
+    },
+    checkFeature(isChecked,item){
+      isChecked ? this.selectedFeatureList.push(item.dictValue)
+        : this.selectedFeatureList.splice(this.selectedFeatureList.findIndex(i => i === item.dictValue), 1);
+    },
+    checkCharacteristic(isChecked,item){
+      isChecked ? this.selectedCharacteristicList.push(item.dictValue)
+        : this.selectedCharacteristicList.splice(this.selectedCharacteristicList.findIndex(i => i=== item.dictValue), 1);
     },
     quit(){
       this.$emit('on-quit');
     },
-    uploadSmallImage(data){},
-    confirmAdd(){
-      let params = {
-        "characteristic": "1,2,3",
-        "features": "1,2,3",
-        "id": 0,
-        "name": "狗狗",
-        "pid": 0,
-        "shapeId": 1,
-        "thumbnail": "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2259376396,2250852130&fm=27&gp=0.jpg"
+    uploadSmallImage(data){
+      this.imageUrl = data.imageSmallUrl
+    },
+    confirm(){
+      // checkValid
+      if(!this.pid){
+        this.$message({
+          message: '请选择一级分类',
+          type: 'error'
+        })
+        return
       }
-      this.$http.post('api/mgmt/platform/classific/persistent',params).then((res)=>{
+      if(!this.secondClassifyName){
+        this.$message({
+          message: '请填写二级分类',
+          type: 'error'
+        })
+        return
+      }
+      if(!this.imageUrl){
+        this.$message({
+          message: '请上传图片作为缩略图',
+          type: 'error'
+        })
+        return
+      }
+      if(!this.petShape){
+        this.$message({
+          message: '请选择体型',
+          type: 'error'
+        })
+        return
+      }
+      if(this.featureList.length > 0){
+        this.$message({
+          message: '请至少选择一种功能',
+          type: 'error'
+        })
+        return
+      }
+      if(this.selectedCharacteristicList.length > 0){
+        this.$message({
+          message: '请至少选择一种特点',
+          type: 'error'
+        })
+        return
+      }
+
+      this.loading = true;
+      if(this.config&&this.config.id){
+        this.updateSecondClassify()
+      }else{
+        this.addSecondClassify()
+      }
+    },
+    addSecondClassify(){
+      let params = {
+        "characteristic": this.selectedCharacteristicList.join(','),
+        "features": this.selectedFeatureList.join(','),
+        "hot": this.hot,
+        "name": this.secondClassifyName,
+        "pid": this.pid,
+        "shape": this.petShape,
+        "thumbnail": this.imageUrl
+      }
+      this.$http.post('api/mgmt/platform/classific/save',params).then((res)=>{
+        this.loading = false;
         if(res.code === 1000){
           this.$emit('on-quit')
         }else{
@@ -132,10 +203,60 @@ export default {
           })
         }
       })
+    },
+    updateSecondClassify(){
+      let params = {
+        "characteristic": this.selectedCharacteristicList.join(','),
+        "features": this.selectedFeatureList.join(','),
+        "hot": this.hot,
+        "id": this.config.id,
+        "name": this.secondClassifyName,
+        "pid": this.pid,
+        "shape": this.petShape,
+        "thumbnail": this.imageUrl
+      }
+      this.$http.put('api/mgmt/platform/classific/update',params).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.$emit('on-quit')
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    getDetailData(id){
+      this.$http.get('api/mgmt/public/classific/info/'+ id).then((res)=>{
+        if(res.code === 1000){
+          this.pid = res.date.pid;
+          this.secondClassifyName = res.data.name;
+          this.hot = res.data.hot;
+          this.imageUrl = res.data.thumbnail;
+          this.petShape = res.data.shape;
+          this.initCheckedFeature();
+          this.initCheckedCharacteristic();
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    initCheckedFeature(data){
+
+    },
+    initCheckedCharacteristic(data){
 
     },
   },
   created(){
+    this.getFirstClassifyList();
+    if(this.config&&this.config.id){
+      this.getDetailData(this.config.id)
+    }
   },
 }
 </script>
@@ -169,6 +290,7 @@ export default {
       overflow: auto;
       .item{
         margin-bottom: 10px;
+        min-height: 36px;
         span{
           display: inline-block;
         }
