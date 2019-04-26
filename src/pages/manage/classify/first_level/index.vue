@@ -18,7 +18,7 @@
           <th>序号</th>
           <th>缩略图</th>
           <th>一级分类</th>
-          <!--<th>创建时间</th>-->
+          <th>创建时间</th>
           <th>操作</th>
         </tr>
         </thead>
@@ -29,7 +29,7 @@
             <img class="img-in-table" :src="item.thumbnail">
           </td>
           <td style="width: 20%">{{item.name}}</td>
-          <!--<td style="width: 20%">{{item.createTime}}</td>-->
+          <td style="width: 20%">{{item.createTime}}</td>
           <td style="width: 20%">
             <div class="color-green cursor_pointer" @click="edit(item)">修改</div>
             <div class="color-red cursor_pointer" @click="del(item)">删除</div>
@@ -89,7 +89,7 @@ export default {
     //获取商品列表
     getFirstClassifyList(){
       this.loading = true;
-      this.$http.get('api/mgmt/public/classific/1?status='+this.filterStatus).then((res)=>{
+      this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status='+this.filterStatus).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
           this.firstClassifyList = res.data;
@@ -114,7 +114,7 @@ export default {
     },
     del(item){
       let params = {
-        ids: [item.id]
+        ids: item.id
       }
       this.loading = true;
       // todo

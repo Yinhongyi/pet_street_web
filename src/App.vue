@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-loading="$store.state.loading">
     <transition :name="transitionName">
       <keep-alive>
         <router-view class="app"></router-view>

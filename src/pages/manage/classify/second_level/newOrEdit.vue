@@ -1,6 +1,6 @@
 <template>
   <div class="new-or-edit-second-classify" v-loading="loading">
-    <div class="title-line">新增分类</div>
+    <div class="title-line">{{config&&config.id?'更改':'新增'}}二级分类</div>
     <div class="container">
       <div class="item">
         <span class="left">一级分类：</span>
@@ -68,6 +68,7 @@
 </template>
 <script>
 /*eslint-disable*/
+import _cloneDeep from 'loadsh/cloneDeep'
 export default {
   props:{
     config: {
@@ -79,7 +80,6 @@ export default {
   },
   components: {},
   data(){
-    let _this = this;
     return {
       pid: '',
       secondClassifyName: '',
@@ -88,9 +88,9 @@ export default {
       petFeature: '',
       petCharacteristic: '',
       firstClassifyList: [],
-      featureList: _this.$store.state.featureList,
-      characteristicList: _this.$store.state.characteristicList,
-      shapesList: _this.$store.state.shapesList,
+      featureList: [],
+      characteristicList: [],
+      shapesList: [],
       selectedFeatureList: [],
       selectedCharacteristicList: [],
       hot: false,
@@ -99,7 +99,7 @@ export default {
   },
   methods:{
     getFirstClassifyList(){
-      this.$http.get('api/mgmt/public/classific/1?status=0').then((res)=>{
+      this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status=0').then((res)=>{
         if(res.code === 1000){
           this.firstClassifyList = res.data;
         }else{
@@ -125,6 +125,17 @@ export default {
         : this.selectedCharacteristicList.splice(this.selectedCharacteristicList.findIndex(i => i=== item.dictValue), 1);
     },
     quit(){
+      this.pid = '';
+      this.secondClassifyName = '';
+      this.imageUrl =  '';
+      this.petShape = '';
+      this.petFeature = '';
+      this.petCharacteristic =  '';
+      this.firstClassifyList = [];
+      this.featureList = [];
+      this.characteristicList = [];
+      this.shapesList = [];
+
       this.$emit('on-quit');
     },
     uploadSmallImage(data){
@@ -160,14 +171,14 @@ export default {
         })
         return
       }
-      if(this.featureList.length > 0){
+      if(this.featureList.length === 0){
         this.$message({
           message: '请至少选择一种功能',
           type: 'error'
         })
         return
       }
-      if(this.selectedCharacteristicList.length > 0){
+      if(this.selectedCharacteristicList.length === 0){
         this.$message({
           message: '请至少选择一种特点',
           type: 'error'
@@ -228,15 +239,17 @@ export default {
       })
     },
     getDetailData(id){
+      this.loading = true;
       this.$http.get('api/mgmt/public/classific/info/'+ id).then((res)=>{
+        this.loading = false;
         if(res.code === 1000){
-          this.pid = res.date.pid;
+          this.pid = res.data.pid;
           this.secondClassifyName = res.data.name;
           this.hot = res.data.hot;
           this.imageUrl = res.data.thumbnail;
           this.petShape = res.data.shape;
-          this.initCheckedFeature();
-          this.initCheckedCharacteristic();
+          this.initCheckedFeature(res.data.features);
+          this.initCheckedCharacteristic(res.data.characteristic);
         }else{
           this.$message({
             message: res.message,
@@ -246,13 +259,28 @@ export default {
       })
     },
     initCheckedFeature(data){
-
+      let featureList = data && data.split(',');
+      this.featureList.forEach((item,index)=>{
+        this.$set(item, 'isChecked', )
+        item.isChecked = featureList.indexOf(item.dictValue) > -1;
+      })
     },
     initCheckedCharacteristic(data){
-
+      let characteristicList = data && data.split(',')
+      this.characteristicList.forEach((item,index)=>{
+        item.isChecked = characteristicList.indexOf(item.dictValue) > -1;
+      })
     },
   },
   created(){
+    this.featureList = _cloneDeep(this.$store.state.featureList);
+    this.characteristicList = _cloneDeep(this.$store.state.characteristicList);
+    this.shapesList = _cloneDeep(this.$store.state.shapesList);
+
+    this.featureList.forEach((item) => {this.$set(item, 'isChecked', false)});
+    this.characteristicList.forEach((item) => {this.$set(item, 'isChecked', false)});
+    this.shapesList.forEach((item) => {this.$set(item, 'isChecked', false)});
+
     this.getFirstClassifyList();
     if(this.config&&this.config.id){
       this.getDetailData(this.config.id)

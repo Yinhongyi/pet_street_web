@@ -14,13 +14,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
+    "Vuex": "^3.1.0",
     "axios": "0.16.2",
     "babel-polyfill": "^6.23.0",
-    "vuex": "2.3.1",
     "element-ui": "2.6.0",
-    "Vuex": "^3.1.0"
+    "loadsh": "0.0.4",
+    "vue": "^2.5.2",
+    "vue-router": "^3.0.1",
+    "vuex": "2.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

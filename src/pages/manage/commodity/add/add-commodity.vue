@@ -1,24 +1,24 @@
 <template>
-  <div class="add-commodity">
+  <div class="add-commodity" v-loading="loading">
     <y-tab class="tab" :tabList="tabList" @change="changeTab($event)"></y-tab>
     <div class="title-line">商品信息</div>
     <div class="container">
       <div class="item-line">
         <span class="item-title">选择种类：</span>
-        <el-select v-model="petClassify" placeholder="请选择" @change="selectPetClassify($event)">
+        <el-select v-model="firstClassify" placeholder="请选择" @change="selectFirstClassify($event)">
           <el-option
-            v-for="item in petList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in firstClassifyList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
           </el-option>
         </el-select>
-        <el-select v-model="classifyDetail" placeholder="请选择" @change="selectClassifyDetail($event)">
+        <el-select v-model="secondClassify" placeholder="请选择" @change="selectSecondClassify($event)">
           <el-option
-            v-for="item in detailList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in secondClassifyList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
           </el-option>
         </el-select>
       </div>
@@ -39,12 +39,12 @@
       </div>
       <div class="item-line">
         <span class="item-title">品级：</span>
-        <el-select v-model="petClassify" placeholder="请选择" @change="selectPetClassify($event)">
+        <el-select v-model="petGrade" placeholder="请选择" @change="selectPetClassify($event)">
           <el-option
-            v-for="item in petList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="item in petGradeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue">
           </el-option>
         </el-select>
       </div>
@@ -177,30 +177,18 @@ export default {
   },
   components: {},
   data(){
+    let _this = this;
     return {
+      loading: false,
       tabList: ['商品管理','新增商品'],
-      petList: [
-        {
-          value: '1',
-          label: '狗狗'
-        },
-        {
-          value: '2',
-          label: '猫猫'
-        }
-      ],
+      firstClassify: '',
+      firstClassifyList: [],
+      secondClassify: '',
+      secondClassifyList: [],
+      petGrade:'',
+      petGradeList: _this.$store.state.gradeList,
       petClassify: '',
-      detailList: [
-        {
-          value: '1',
-          label: '金毛'
-        },
-        {
-          value: '2',
-          label: '哈士奇'
-        }
-      ],
-      classifyDetail: '',
+      petList: [],
       petSex: 1,
       petAge: '',
       input: '',
@@ -234,13 +222,16 @@ export default {
       console.log(index)
     },
     //选择种类
-    selectPetClassify(pet){
-      console.log(pet)
+    selectFirstClassify(id){
+      this.getSecondClassifyList(id)
     },
     //具体种类
-    selectClassifyDetail(classify){
+    selectSecondClassify(classify){
       console.log(classify)
     },
+
+    selectPetClassify(){},
+
     //选择年龄
     changePetAge(date){
       console.log(date.toJSON().split('T')[0])
@@ -257,9 +248,66 @@ export default {
       item.imgUrl = data.imageSmallUrl;
       this.swiperImgList.length < 5 ? this.swiperImgList.push({imgUrl:''}) : '';
     },
+    getFirstClassifyList(){
+      this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status=0').then((res) => {
+        if (res.code === 1000) {
+          this.firstClassifyList = res.data;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    getSecondClassifyList(id){
+      this.$http.get('api/mgmt/public/classific/query?level=2&pid='+id+'&status=0').then((res) => {
+        if (res.code === 1000) {
+          this.secondClassifyList = res.data;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+
+    },
+    getClassifyList(){
+      this.loading = true;
+      let getFirstClassifyList = new Promise((resolve, reject)=> {
+        this.$http.get('api/mgmt/public/classific/1?status=0').then((res) => {
+          if (res.code === 1000) {
+            this.secondClassifyList = res.data;
+          }else{
+            this.$message({
+              message: res.message,
+              type: 'error'
+            })
+          }
+          resolve()
+        })
+      })
+      let getSecondClassifyList = new Promise((resolve, reject)=> {
+        this.$http.get('api/mgmt/public/classific/2?status=0').then((res) => {
+          if (res.code === 1000) {
+            this.secondClassifyList = res.data;
+          }else{
+            this.$message({
+              message: res.message,
+              type: 'error'
+            })
+          }
+          resolve()
+        })
+      })
+      Promise.all([getFirstClassifyList,getSecondClassifyList]).then(()=>{
+        this.loading = false;
+      })
+    }
   },
   created(){
-    // console.log(this.$store.state.featureList)
+    this.getFirstClassifyList()
   },
 }
 </script>

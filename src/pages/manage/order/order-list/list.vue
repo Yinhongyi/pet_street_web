@@ -63,7 +63,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="100"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
         :total="1000">
       </el-pagination>
@@ -159,6 +159,7 @@ export default {
         },
       ],
       currentPage: 1,
+      pageSize: 10,
       dialogDetailShow: false,
       currentDetail: '',
       beginCreateTime: '',
@@ -174,14 +175,14 @@ export default {
     getOrderList(){
       // WAIT_FOR_PAY(待付款),CANCEL,PAYING(已取消),WAIT_FOR_DELIVERY(待发货),DELIVERED(已发货),RECEIVED(已收货),EVALUATED(已评价),FINISH(已完成)
       let params = {
-        "beginCreateTime": this.beginCreateTime,
-        "endCreateTime": this.endCreateTime,
-        "orderNo": "",
+        // "beginCreateTime": this.beginCreateTime,
+        // "endCreateTime": this.endCreateTime,
+        // "orderNo": "",
         "pageNum": this.currentPage,
-        "pageSize": 10,
-        "status": [
+        "pageSize": this.pageSize,
+        // "status": [
           // "WAIT_FOR_PAY", "CANCEL", "PAYING", "WAIT_FOR_DELIVERY", "DELIVERED", "RECEIVED", "EVALUATED", "FINISH"
-        ]
+        // ]
       };
       this.$http.post('api/mgmt/mall/query', params).then((res)=>{
         if(res.code === 1000){

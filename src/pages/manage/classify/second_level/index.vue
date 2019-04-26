@@ -96,7 +96,7 @@ export default {
     //获取商品列表
     getSecondClassifyList(){
       this.loading = true;
-      this.$http.get('api/mgmt/public/classific/2?status='+this.filterStatus).then((res)=>{
+      this.$http.get('api/mgmt/public/classific/query?level=2&status='+this.filterStatus).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
           this.secondClassifyList = res.data
@@ -179,6 +179,12 @@ export default {
     }
     .list-table{
       overflow: auto;
+      table{
+        .img-in-table{
+          width: 80px;
+          height: 80px;
+        }
+      }
       .pagination{
         float: right;
         margin: 12px;

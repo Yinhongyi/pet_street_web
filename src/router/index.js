@@ -54,9 +54,11 @@ router.beforeEach((to, from, next) => {
     // 当前已在登录页面
     next()
   } else {
+    $store.commit('changeLoading', true)
     if (localStorage.P_S_TOKEN_KEY) {
       // 已登录
-      if($store.state.hasUpdateFeature&&$store.state.hasUpdateCharacteristic&&$store.state.hasUpdateShapes){
+      if($store.state.hasUpdateFeature&&$store.state.hasUpdateCharacteristic&&$store.state.hasUpdateShapes&&$store.state.hasUpdateGrade){
+        $store.commit('changeLoading', false)
         next()
         return
       }
@@ -84,14 +86,25 @@ router.beforeEach((to, from, next) => {
           }
         })
       })
+      let getGrade = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/dict/petGrade').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateGradeList', res.data.dictList)
+            resolve()
+          }
+        })
+      })
       Promise.all([getFeaturesList,getCharacteristicList,getShapes]).then(()=>{
+        $store.commit('changeLoading', false)
         next();
       })
         .catch(()=>{
+          $store.commit('changeLoading', false)
 
       })
     } else {
       // 未登录
+      $store.commit('changeLoading', false)
       next({
         path: '/login'
       })

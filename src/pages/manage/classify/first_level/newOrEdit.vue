@@ -1,6 +1,6 @@
 <template>
   <div class="new-or-edit-first-classify" v-loading="loading">
-    <div class="title-line">新增分类</div>
+    <div class="title-line">{{config&&config.id?'更改':'新增'}}一级分类</div>
     <div class="container">
       <div class="item">
         <span class="left">一级分类：</span>
@@ -135,6 +135,7 @@ export default {
   .new-or-edit-first-classify{
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     background-color: white;
