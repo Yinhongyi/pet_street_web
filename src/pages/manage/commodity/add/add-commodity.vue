@@ -3,6 +3,7 @@
     <y-tab class="tab" :tabList="tabList" @change="changeTab($event)"></y-tab>
     <div class="title-line">商品信息</div>
     <div class="container">
+      <!--选择种类-->
       <div class="item-line">
         <span class="item-title">选择种类：</span>
         <el-select v-model="firstClassify" placeholder="请选择" @change="selectFirstClassify($event)">
@@ -13,7 +14,7 @@
             :value="item.id">
           </el-option>
         </el-select>
-        <el-select v-model="secondClassify" placeholder="请选择" @change="selectSecondClassify($event)">
+        <el-select v-model="commodityData.classificId" placeholder="请选择" @change="selectSecondClassify($event)">
           <el-option
             v-for="item in secondClassifyList"
             :key="item.id"
@@ -22,24 +23,28 @@
           </el-option>
         </el-select>
       </div>
+      <!--性别-->
       <div class="item-line">
         <span class="item-title">性别：</span>
-        <el-radio-group v-model="petSex">
-          <el-radio :label="1">男</el-radio>
-          <el-radio :label="2">女</el-radio>
+        <el-radio-group v-model="commodityData.petSex">
+          <el-radio :label="'01'">男</el-radio>
+          <el-radio :label="'02'">女</el-radio>
         </el-radio-group>
       </div>
+      <!--年龄-->
       <div class="item-line">
         <span class="item-title">年龄：</span>
         <el-date-picker
-          v-model="petAge"
+          v-model="commodityData.petBirthday"
           type="date"
-          placeholder="选择日期" @change="changePetAge($event)">
+          value-format="yyyy-MM-dd"
+          placeholder="选择日期">
         </el-date-picker>
       </div>
+      <!--品级-->
       <div class="item-line">
         <span class="item-title">品级：</span>
-        <el-select v-model="petGrade" placeholder="请选择" @change="selectPetClassify($event)">
+        <el-select v-model="commodityData.petGrade" placeholder="请选择">
           <el-option
             v-for="item in petGradeList"
             :key="item.dictValue"
@@ -48,84 +53,98 @@
           </el-option>
         </el-select>
       </div>
+      <!--配送-->
       <div class="item-line">
         <span class="item-title">配送：</span>
-        <div class="input-box">
-          <span>自提：</span>
-          <el-input v-model="input" placeholder="请输入价格"></el-input>
-        </div>
-        <div class="input-box">
-          <span>汽运：</span>
-          <el-input v-model="input" placeholder="请输入价格"></el-input>
-        </div>
-        <div class="input-box">
-          <span>空运：</span>
-          <el-input v-model="input" placeholder="请输入价格"></el-input>
+        <div class="input-box" v-for="(item,index) in commodityData.delivery" :key="index">
+          <span>{{getDeliveryLabel(item.deliveryType)}}：</span>
+          <el-input v-model="item.deliveryPrice" placeholder="请输入价格"></el-input>
         </div>
       </div>
+      <!--资质保障-->
       <div class="item-line">
         <span class="item-title">资质保障：</span>
-        <el-checkbox v-model="checked" label="官方自营" border></el-checkbox>
-        <el-checkbox v-model="checked" label="100%实拍" border></el-checkbox>
-        <el-checkbox v-model="checked" label="先行赔付" border disabled></el-checkbox>
+        <el-checkbox border
+                     v-for="(item,index) in guaranteeList" :key="index"
+                     v-model="item.isChecked"
+                     :label="item.dictLabel"
+                     :disabled="false"
+                     @change="changeGuarantee">
+        </el-checkbox>
       </div>
+      <!--价格-->
       <div class="item-line">
         <span class="item-title">商品价格：</span>
         <div class="input-box">
-          <el-input v-model="input" placeholder="请输入商品价格"></el-input>
+          <el-input v-model="commodityData.prodPrice" placeholder="请输入商品价格"></el-input>
         </div>
         <div class="input-box">
           <span>打折：</span>
-          <el-input v-model="input" placeholder="请输入打折后价格"></el-input>
+          <el-input v-model="commodityData.discountPrice" placeholder="请输入打折后价格"></el-input>
         </div>
         <span class="tips">如该商品不打折，则不需要填写打折后价格</span>
       </div>
-      <div class="item-line">
+      <!--疫苗-->
+      <div class="item-line auto-height">
         <span class="item-title">疫苗：</span>
         <div class="list">
-          <el-select v-model="petClassify" placeholder="请选择" @change="selectPetClassify($event)">
-            <el-option
-              v-for="item in petList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div class="line" v-for="(item,index) in commodityData.expParasite" :key="index">
+            <el-select v-model="item.ventionOrder" placeholder="请选择">
+              <el-option
+                v-for="item in vaccinesOrderList"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue">
+              </el-option>
+            </el-select>
 
-          <el-date-picker
-            v-model="petAge"
-            type="date"
-            placeholder="选择日期" @change="changePetAge($event)">
-          </el-date-picker>
+            <el-date-picker
+              v-model="item.ventionDate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
 
-          <el-input v-model="input" placeholder="请输入疫苗品牌"></el-input>
+            <el-input v-model="item.ventionModel" placeholder="请输入疫苗品牌"></el-input>
 
-          <span><i class="iconfont icon-plus-circle"></i></span>
+            <span>
+            <i class="iconfont icon-plus-circle" @click="addExpParasite(commodityData.expParasite)"></i>
+            <i v-if="index > 0" class="iconfont icon-minus-circle" @click="reduceExpParasite(index,commodityData.expParasite)"></i>
+          </span>
+          </div>
         </div>
       </div>
-      <div class="item-line">
+      <!--驱虫-->
+      <div class="item-line auto-height">
         <span class="item-title">驱虫：</span>
         <div class="list">
-          <el-select v-model="petClassify" placeholder="请选择" @change="selectPetClassify($event)">
-            <el-option
-              v-for="item in petList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <div class="line" v-for="(item,index) in commodityData.vaccines" :key="index">
+            <el-select v-model="item.ventionOrder" placeholder="请选择">
+              <el-option
+                v-for="item in expParasiteOrderList"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue">
+              </el-option>
+            </el-select>
 
-          <el-date-picker
-            v-model="petAge"
-            type="date"
-            placeholder="选择日期" @change="changePetAge($event)">
-          </el-date-picker>
+            <el-date-picker
+              v-model="item.ventionDate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
 
-          <el-input v-model="input" placeholder="请输入驱虫药品牌"></el-input>
+            <el-input v-model="item.ventionModel" placeholder="请输入驱虫药品牌"></el-input>
 
-          <span><i class="iconfont icon-plus-circle"></i></span>
+            <span>
+              <i class="iconfont icon-plus-circle" @click="addExpParasite(commodityData.vaccines)"></i>
+              <i v-if="index > 0" class="iconfont icon-minus-circle" @click="reduceExpParasite(index,commodityData.vaccines)"></i>
+            </span>
+          </div>
         </div>
       </div>
+      <!--商品详情-->
       <div class="item-line">
         <span class="item-title">商品详情：</span>
       </div>
@@ -134,30 +153,34 @@
           type="textarea"
           autosize
           placeholder="请输入内容"
-          v-model="input">
+          v-model="commodityData.prodDesc">
         </el-input>
         <!--<ueditor ref="ueditor" :config="editorConfig" @on-change="ueditorChange($event)"></ueditor>-->
       </div>
+      <!--缩略图-->
       <div class="item-line">
         <span class="item-title">缩略图：</span>
       </div>
       <div class="editor-container">
-        <pet-upload @on-success="uploadSmallImage"></pet-upload>
+        <pet-upload :imgUrl="commodityData.thumbnailUrl" @on-success="uploadSmallImage"></pet-upload>
       </div>
+      <!--轮播图-->
       <div class="item-line">
         <span class="item-title" style="overflow: visible">轮播顶图/视频：</span>
       </div>
       <div class="editor-container">
         <pet-upload v-for="(item,index) in swiperImgList" :key="index" @on-success="uploadSwiperImage($event,item)"></pet-upload>
       </div>
-      <div class="item-line">
+      <!--状态-->
+      <div class="item-line" v-if="config&&config.id">
         <span class="item-title">状态切换：</span>
         <button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="isSelectedDownBtn = !isSelectedDownBtn">下架</button>
         <span class="tips">因特殊情况需手动下架商品，请谨慎操作</span>
       </div>
+      <!--按钮-->
       <div class="footer">
-        <el-button type="danger">预览</el-button>
-        <el-button type="danger">提交审核</el-button>
+        <el-button type="danger" @click="preview">预览</el-button>
+        <el-button type="danger" @click="audit">提交审核</el-button>
         <el-button type="info">取消</el-button>
       </div>
     </div>
@@ -165,10 +188,13 @@
 </template>
 <script>
 /*eslint-disable*/
+import _cloneDeep from 'loadsh/cloneDeep'
+
 const token = localStorage.getItem('P_S_TOKEN_KEY');
+
 export default {
   props:{
-    commodityData: {
+    config: {
       type: Object,
       default: function (){
         return {}
@@ -181,18 +207,46 @@ export default {
     return {
       loading: false,
       tabList: ['商品管理','新增商品'],
+      commodityData: {
+        "classificId": '',  //二级分类id
+        "delivery": [
+          // {
+          //   deliveryType: '',
+          //   deliveryPrice: ''
+          // }
+        ],  //配送信息
+        "discountPrice": '',  //打折商品金额
+        "expParasite": [
+          {
+            ventionDate: '',
+            ventionModel: '',
+            ventionOrder: '',
+          }
+        ],  //驱虫信息
+        "guarantee": "", //资质保障
+        "id": '',
+        "imageUrl": "",
+        "petBirthday": "",  //宠物生日
+        "petGrade": "", //宠物品级
+        "petSex": "01", //宠物性别
+        "prodDesc": "", //商品描述
+        "prodPrice": '',  //商品价格
+        "thumbnailUrl": "", //缩略图
+        "topDrawUrl": "", //轮播顶图/视频地址
+        "vaccines": [
+          {
+            ventionDate: '',
+            ventionModel: '',
+            ventionOrder: '',
+          }
+        ],  //防疫信息
+      },
       firstClassify: '',
       firstClassifyList: [],
       secondClassify: '',
       secondClassifyList: [],
-      petGrade:'',
-      petGradeList: _this.$store.state.gradeList,
-      petClassify: '',
-      petList: [],
-      petSex: 1,
-      petAge: '',
-      input: '',
-      checked: true,
+      petGradeList: [],
+      petBirthday: '',
       imageUrl: '',
       isSelectedDownBtn: false,
       editorConfig: {
@@ -214,6 +268,10 @@ export default {
           imgUrl: ''
         }
       ],
+      deliveryTypeList: [],
+      guaranteeList: [],
+      vaccinesOrderList: [],
+      expParasiteOrderList: [],
     }
   },
   methods:{
@@ -221,33 +279,15 @@ export default {
     changeTab(index){
       console.log(index)
     },
-    //选择种类
+    //选择一级分类
     selectFirstClassify(id){
       this.getSecondClassifyList(id)
     },
-    //具体种类
-    selectSecondClassify(classify){
-      console.log(classify)
+    //选择二级分类
+    selectSecondClassify(id){
+      console.log(id)
     },
-
-    selectPetClassify(){},
-
-    //选择年龄
-    changePetAge(date){
-      console.log(date.toJSON().split('T')[0])
-      console.log(date.toJSON().split('T')[1].split('.')[0])
-      console.log(date)
-    },
-    ueditorChange(data){
-      console.log('ueditor content: ',data)
-    },
-    uploadSmallImage(data){
-      console.log(data);
-    },
-    uploadSwiperImage(data,item){
-      item.imgUrl = data.imageSmallUrl;
-      this.swiperImgList.length < 5 ? this.swiperImgList.push({imgUrl:''}) : '';
-    },
+    //获取一级分类
     getFirstClassifyList(){
       this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status=0').then((res) => {
         if (res.code === 1000) {
@@ -260,6 +300,7 @@ export default {
         }
       })
     },
+    //获取二级分类
     getSecondClassifyList(id){
       this.$http.get('api/mgmt/public/classific/query?level=2&pid='+id+'&status=0').then((res) => {
         if (res.code === 1000) {
@@ -273,41 +314,83 @@ export default {
       })
 
     },
-    getClassifyList(){
+    //设置配送方式
+    setCommodityDelivery(){
+      this.commodityData.delivery = [];
+      this.deliveryTypeList.forEach((item,index)=>{
+        this.commodityData.delivery.push({
+          deliveryPrice: '',
+          deliveryType: item.dictValue
+        })
+      })
+    },
+    //获取配送方式名称
+    getDeliveryLabel(type){
+      let delivery = this.deliveryTypeList.find((item)=>{ return item.dictValue === type });
+      return delivery&&delivery.dictLabel;
+    },
+    //设置资质保障
+    setCommodityGuarantee(){
+      this.guaranteeList.forEach((item,index)=>{
+        this.$set(item, 'isChecked', false)
+      })
+    },
+    //改变资质保障实时设置接口所需参数格式
+    changeGuarantee(){
+      let guaranteeList = [];
+      this.guaranteeList.forEach((item,index)=>{
+        item.isChecked ? guaranteeList.push(item.dictValue) : '';
+      })
+      this.commodityData.guarantee = guaranteeList.join(',');
+    },
+    //添加驱虫疫苗记录
+    addExpParasite(list){
+      list.push({
+        ventionDate: '',
+        ventionModel: '',
+        ventionOrder: '',
+      })
+    },
+    //减少驱虫疫苗记录
+    reduceExpParasite(index,list){
+      list.splice(index,1);
+    },
+    ueditorChange(data){
+      console.log('ueditor content: ',data)
+    },
+    uploadSmallImage(data){
+      this.commodityData.thumbnailUrl = data.imageSmallUrl
+    },
+    uploadSwiperImage(data,item){
+      this.commodityData.topDrawUrl = data.imageSmallUrl;
+      // item.imgUrl = data.imageSmallUrl;
+      // this.swiperImgList.length < 5 ? this.swiperImgList.push({imgUrl:''}) : '';
+    },
+    preview(){},
+    audit(){
+      let params = _cloneDeep(this.commodityData);
       this.loading = true;
-      let getFirstClassifyList = new Promise((resolve, reject)=> {
-        this.$http.get('api/mgmt/public/classific/1?status=0').then((res) => {
-          if (res.code === 1000) {
-            this.secondClassifyList = res.data;
-          }else{
-            this.$message({
-              message: res.message,
-              type: 'error'
-            })
-          }
-          resolve()
-        })
-      })
-      let getSecondClassifyList = new Promise((resolve, reject)=> {
-        this.$http.get('api/mgmt/public/classific/2?status=0').then((res) => {
-          if (res.code === 1000) {
-            this.secondClassifyList = res.data;
-          }else{
-            this.$message({
-              message: res.message,
-              type: 'error'
-            })
-          }
-          resolve()
-        })
-      })
-      Promise.all([getFirstClassifyList,getSecondClassifyList]).then(()=>{
+      this.$http.post('api/mgmt/mall/prod/save', params).then((res)=>{
         this.loading = false;
+        if(res.code === 1000){
+
+        }
       })
-    }
+    },
   },
   created(){
-    this.getFirstClassifyList()
+    this.getFirstClassifyList();
+    //宠物品级
+    this.petGradeList = _cloneDeep(this.$store.state.gradeList)
+    //配送方式
+    this.deliveryTypeList = _cloneDeep(this.$store.state.deliveryTypeList);
+    this.setCommodityDelivery();
+    //资质保障
+    this.guaranteeList = _cloneDeep(this.$store.state.guaranteeList);
+    this.setCommodityGuarantee();
+    //驱虫、疫苗
+    this.vaccinesOrderList = _cloneDeep(this.$store.state.vaccinesOrderList);
+    this.expParasiteOrderList = _cloneDeep(this.$store.state.expParasiteOrderList);
   },
 }
 </script>
@@ -334,6 +417,7 @@ export default {
         margin-bottom: 10px;
         height: 40px;
         white-space: nowrap;
+        position: relative;
         .item-title{
           display: inline-block;
           width: 100px;
@@ -349,6 +433,10 @@ export default {
         }
         .list{
           display: inline-block;
+          width: ~'calc(100% - 120px)';
+          .line{
+            margin-bottom: 10px;
+          }
         }
         .tips{
           color: rgba(168, 168, 168, 1);
@@ -363,6 +451,9 @@ export default {
           background-color: #409EFF;
           border-color: #409EFF;
         }
+      }
+      .auto-height{
+        height: auto;
       }
       .editor-container{
         margin-bottom: 20px;

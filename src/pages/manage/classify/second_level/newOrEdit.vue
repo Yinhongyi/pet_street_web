@@ -261,13 +261,14 @@ export default {
     initCheckedFeature(data){
       let featureList = data && data.split(',');
       this.featureList.forEach((item,index)=>{
-        this.$set(item, 'isChecked', )
+        this.$set(item, 'isChecked', false)
         item.isChecked = featureList.indexOf(item.dictValue) > -1;
       })
     },
     initCheckedCharacteristic(data){
       let characteristicList = data && data.split(',')
       this.characteristicList.forEach((item,index)=>{
+        this.$set(item, 'isChecked', false)
         item.isChecked = characteristicList.indexOf(item.dictValue) > -1;
       })
     },

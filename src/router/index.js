@@ -57,11 +57,20 @@ router.beforeEach((to, from, next) => {
     $store.commit('changeLoading', true)
     if (localStorage.P_S_TOKEN_KEY) {
       // 已登录
-      if($store.state.hasUpdateFeature&&$store.state.hasUpdateCharacteristic&&$store.state.hasUpdateShapes&&$store.state.hasUpdateGrade){
+      if($store.state.hasUpdateFeature
+        &&$store.state.hasUpdateCharacteristic
+        &&$store.state.hasUpdateShapes
+        &&$store.state.hasUpdateGrade
+        &&$store.state.hasUpdateVaccinesOrder
+        &&$store.state.hasUpdateExpParasiteOrder
+        &&$store.state.hasUpdateGuarantee
+        &&$store.state.hasUpdateDeliveryType
+      ){
         $store.commit('changeLoading', false)
         next()
         return
       }
+      //获取功能列表
       let getFeaturesList = new Promise((resolve, reject)=>{
         $http.get('api/mgmt/public/dict/featuresType').then((res)=>{
           if(res.code === 1000){
@@ -70,6 +79,7 @@ router.beforeEach((to, from, next) => {
           }
         })
       })
+      //获取特点列表
       let getCharacteristicList = new Promise((resolve, reject)=>{
         $http.get('api/mgmt/public/dict/traitType').then((res)=>{
           if(res.code === 1000){
@@ -78,6 +88,7 @@ router.beforeEach((to, from, next) => {
           }
         })
       })
+      //获取体型列表
       let getShapes = new Promise((resolve, reject)=>{
         $http.get('api/mgmt/public/dict/classificShape').then((res)=>{
           if(res.code === 1000){
@@ -86,6 +97,7 @@ router.beforeEach((to, from, next) => {
           }
         })
       })
+      //获取品级列表
       let getGrade = new Promise((resolve, reject)=>{
         $http.get('api/mgmt/public/dict/petGrade').then((res)=>{
           if(res.code === 1000){
@@ -94,15 +106,60 @@ router.beforeEach((to, from, next) => {
           }
         })
       })
-      Promise.all([getFeaturesList,getCharacteristicList,getShapes]).then(()=>{
+      //获取商品防疫信息列表
+      let getVaccinesOrder = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/dict/vaccinesOrder').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateVaccinesOrder', res.data.dictList)
+            resolve()
+          }
+        })
+      })
+      //获取商品防疫信息列表
+      let getExpParasiteOrder = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/dict/expParasiteOrder').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateExpParasiteOrder', res.data.dictList)
+            resolve()
+          }
+        })
+      })
+      //获取资质保障列表
+      let getGuarantee = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/dict/guarantee').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateGuarantee', res.data.dictList)
+            resolve()
+          }
+        })
+      })
+      //获取配送方式列表
+      let getDeliveryType = new Promise((resolve, reject)=>{
+        $http.get('api/mgmt/public/dict/deliveryType').then((res)=>{
+          if(res.code === 1000){
+            $store.commit('updateDeliveryType', res.data.dictList)
+            resolve()
+          }
+        })
+      })
+      Promise.all([
+        getFeaturesList,
+        getCharacteristicList,
+        getShapes,
+        getGrade,
+        getVaccinesOrder,
+        getExpParasiteOrder,
+        getGuarantee,
+        getDeliveryType,
+      ]).then(()=>{
         $store.commit('changeLoading', false)
         next();
       })
         .catch(()=>{
           $store.commit('changeLoading', false)
-
       })
-    } else {
+    }
+    else {
       // 未登录
       $store.commit('changeLoading', false)
       next({
