@@ -2,6 +2,15 @@
   <div class="online-commodity">
     <div class="title-line">搜索条件</div>
     <div class="filter-condition">
+      <el-input v-model="filterName" placeholder="请输入商品名称"></el-input>
+
+      <el-date-picker
+        v-model="filterTime"
+        type="date"
+        value-format="yyyy-MM-dd"
+        placeholder="选择日期">
+      </el-date-picker>
+
       <el-select v-model="filterStatus" placeholder="请选择" @change="selectFilterStatus($event)">
         <el-option
           v-for="item in statusConditions"
@@ -10,13 +19,16 @@
           :value="item.value">
         </el-option>
       </el-select>
+
+      <el-button type="danger" @click="getCommodityList">确定</el-button>
+
     </div>
     <div class="list-title">
       <span>宠物商品设置</span>
       <span class="add" @click="$router.push({path: '/manage/commodity/add'})">新增</span>
     </div>
     <div class="list-table">
-      <table class="table" v-loading="true">
+      <table class="table" v-loading="loading">
         <thead>
         <tr>
           <th>编号</th>
@@ -30,19 +42,21 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td style="width: 10%">1</td>
-          <td style="width: 12%">比熊</td>
-          <td style="width: 20%">图片</td>
-          <td style="width: 10%">男</td>
-          <td style="width: 10%">￥1200</td>
-          <td style="width: 12%">2019-03-12</td>
-          <td style="width: 10%">上架</td>
+        <tr v-for="(item,index) in commodityList" :key="index">
+          <td style="width: 10%">{{index}}</td>
+          <td style="width: 12%">{{item.name}}</td>
+          <td style="width: 20%">
+            <img class="img-in-table" :src="item.thumbnail">
+          </td>
+          <td style="width: 10%">{{item.petSex}}</td>
+          <td style="width: 10%">{{item.prodPrice}}</td>
+          <td style="width: 12%">{{item.createTime}}</td>
+          <td style="width: 10%">{{item.upperStatus}}</td>
           <td style="width: 30%">
             <div>上架</div>
             <div>下架</div>
-            <div>修改</div>
-            <div>预览</div>
+            <div @click="$router.push({path: '/manage/commodity/add', query: {id: item.id}})">修改</div>
+            <div @click="preview">预览</div>
           </td>
         </tr>
         </tbody>
@@ -67,6 +81,8 @@ export default {
   components: {},
   data(){
     return {
+      filterName: '',
+      filterTime: '',
       filterStatus: '',
       statusConditions: [
         {
@@ -91,6 +107,8 @@ export default {
         },
       ],
       currentPage: 1,
+      commodityList: [],
+      loading: false
     }
   },
   methods:{
@@ -100,6 +118,25 @@ export default {
     },
     //获取商品列表
     getCommodityList(){
+      let params = {
+        "classificName": "string",
+        "id": 0,
+        "prodStatus": "string",
+        "salesTime": "string"
+      };
+      let type = 'online';
+      this.loading = true;
+      this.$http.get('api/mgmt/mall/prod/query/'+ type, params).then((res) => {
+        this.loading = false;
+        if (res.code === 1000) {
+          this.commodityList = res.data;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
 
     },
     //分页器页码改变
@@ -109,6 +146,8 @@ export default {
     handleCurrentChange(data){
 
     },
+    //预览
+    preview(){},
   },
   created(){
     this.getCommodityList();
@@ -142,6 +181,12 @@ export default {
     }
     .list-table{
       overflow: auto;
+      table{
+        .img-in-table{
+          width: 80px;
+          height: 80px;
+        }
+      }
       .pagination{
         float: right;
         margin: 12px;

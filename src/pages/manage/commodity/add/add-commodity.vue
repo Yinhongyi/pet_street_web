@@ -1,7 +1,7 @@
 <template>
   <div class="add-commodity" v-loading="loading">
-    <y-tab class="tab" :tabList="tabList" @change="changeTab($event)"></y-tab>
-    <div class="title-line">商品信息</div>
+    <!--<y-tab class="tab" :tabList="tabList" @change="changeTab($event)"></y-tab>-->
+    <div class="title-line">{{config&&config.id ? '更新' : '新增'}}商品信息</div>
     <div class="container">
       <!--选择种类-->
       <div class="item-line">
@@ -174,14 +174,14 @@
       <!--状态-->
       <div class="item-line" v-if="config&&config.id">
         <span class="item-title">状态切换：</span>
-        <button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="isSelectedDownBtn = !isSelectedDownBtn">下架</button>
+        <button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="downCommodity">下架</button>
         <span class="tips">因特殊情况需手动下架商品，请谨慎操作</span>
       </div>
       <!--按钮-->
       <div class="footer">
         <el-button type="danger" @click="preview">预览</el-button>
         <el-button type="danger" @click="audit">提交审核</el-button>
-        <el-button type="info">取消</el-button>
+        <el-button type="info" @click="quit">取消</el-button>
       </div>
     </div>
   </div>
@@ -228,7 +228,7 @@ export default {
         "imageUrl": "",
         "petBirthday": "",  //宠物生日
         "petGrade": "", //宠物品级
-        "petSex": "01", //宠物性别
+        "petSex": "", //宠物性别
         "prodDesc": "", //商品描述
         "prodPrice": '',  //商品价格
         "thumbnailUrl": "", //缩略图
@@ -272,6 +272,7 @@ export default {
       guaranteeList: [],
       vaccinesOrderList: [],
       expParasiteOrderList: [],
+      commodityId: '',
     }
   },
   methods:{
@@ -366,16 +367,74 @@ export default {
       // item.imgUrl = data.imageSmallUrl;
       // this.swiperImgList.length < 5 ? this.swiperImgList.push({imgUrl:''}) : '';
     },
+    //预览
     preview(){},
+    //审核
     audit(){
+      // todo  check
       let params = _cloneDeep(this.commodityData);
+
+      this.commodityId ? this.updateCommodity(params) : this.addCommodity(params);
       this.loading = true;
+    },
+    //新增商品
+    addCommodity(params){
       this.$http.post('api/mgmt/mall/prod/save', params).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
 
+          this.quit();
         }
       })
+    },
+    //更新商品
+    updateCommodity(params){
+      this.$http.put('api/mgmt/mall/prod/save', params).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.$message({
+            message: '更新成功',
+            type: 'success'
+          })
+
+          this.quit();
+        }
+      })
+    },
+    //上下架
+    downCommodity(){
+      let params = {
+        ids: this.config.id,
+        isUpper: !this.isSelectedDownBtn
+      }
+      //当前是上架状态，点击下架
+      this.$http.post('api/mgmt/mall/prod/handle',params).then((res)=>{
+        if(res.code === 1000){
+          this.$message({
+            message: this.isSelectedDownBtn ? '下' : '上' + '架成功',
+            type: 'success'
+          })
+          this.isSelectedDownBtn = !this.isSelectedDownBtn;
+        }
+      })
+    },
+    //获取商品详情
+    getCommodityDetail(){
+      this.loading = true;
+      this.$http.get('api/mgmt/mall/prod/view/'+this.commodityId).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.commodityData = res.data;
+        }
+      })
+    },
+    //退出此页面
+    quit(){
+      this.$router.push({path: '/manage/commodity/online'})
     },
   },
   created(){
@@ -391,6 +450,10 @@ export default {
     //驱虫、疫苗
     this.vaccinesOrderList = _cloneDeep(this.$store.state.vaccinesOrderList);
     this.expParasiteOrderList = _cloneDeep(this.$store.state.expParasiteOrderList);
+
+    //如果url参数有id，则请求查看商品详情接口获取详情
+    this.commodityId = this.$route.query&&this.$route.query.id;
+    this.commodityId ? this.getCommodityDetail() : '';
   },
 }
 </script>
@@ -412,7 +475,7 @@ export default {
       padding-left: 2%;
       padding-top: 20px;
       overflow: auto;
-      height: ~'calc(100% - 110px)';
+      height: ~'calc(100% - 64px)';
       .item-line{
         margin-bottom: 10px;
         height: 40px;
