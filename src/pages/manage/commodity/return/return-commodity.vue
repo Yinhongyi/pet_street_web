@@ -16,8 +16,8 @@
       </el-select>
 -->
     </div>
-    <div class="list-table">
-      <table class="table" v-loading="false">
+    <div class="list-table" v-loading="loading">
+      <table class="table">
         <thead>
         <tr>
           <th>编号</th>
@@ -28,23 +28,28 @@
           <th>时间</th>
           <th>状态</th>
           <th>退回原因</th>
-          <th>操作</th>
+          <th>操作{{commodityList.length}}</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td style="width: 8%">1</td>
-          <td style="width: 8%">比熊</td>
-          <td style="width: 20%">图片</td>
-          <td style="width: 8%">男</td>
-          <td style="width: 8%">￥1200</td>
-          <td style="width: 10%">2019-03-12</td>
-          <td style="width: 8%">上架</td>
+        <tr v-if="commodityList.length > 0" v-for="(item,index) in commodityList" :key="index">
+          <td style="width: 8%">{{index+1}}</td>
+          <td style="width: 8%">{{item.classificName}}</td>
+          <td style="width: 20%">
+            <img class="img-in-table" :src="item.thumbnailUrl">
+          </td>
+          <td style="width: 8%">{{item.petSex === '01' ? '男' : '女'}}</td>
+          <td style="width: 8%">{{item.prodPrice}}</td>
+          <td style="width: 10%">{{item.petBirthday}}</td>
+          <td style="width: 8%">{{item.prodStatus}}</td>
           <td style="width: 20%">图文不符</td>
           <td style="width: 10%">
             <div class="color-green cursor_pointer" @click="edit()">修改</div>
             <div class="color-green cursor_pointer" @click="preview()">预览</div>
           </td>
+        </tr>
+        <tr v-if="commodityList.length === 0">
+          no data
         </tr>
         </tbody>
       </table>
@@ -93,6 +98,8 @@ export default {
         },
       ],
       currentPage: 1,
+      loading: false,
+      commodityList: []
     }
   },
   methods:{
@@ -102,6 +109,27 @@ export default {
     },
     //获取商品列表
     getCommodityList(){
+      let params = {
+        "classificName": "",
+        "id": 0,
+        "pageNum": 1,
+        "pageSize": 10,
+        "prodStatus": "",
+        "salesTime": ""
+      };
+      this.loading = true;
+      this.$http.post('api/mgmt/mall/prod/query/back', params).then((res) => {
+        this.loading = false;
+        if (res.code === 1000) {
+          this.commodityList = res.data.rows;
+          console.log(this.commodityList)
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
 
     },
     //分页器页码改变
@@ -149,6 +177,12 @@ export default {
     }
     .list-table{
       overflow: auto;
+      table{
+        .img-in-table{
+          width: 80px;
+          height: 80px;
+        }
+      }
       .pagination{
         float: right;
         margin: 12px;

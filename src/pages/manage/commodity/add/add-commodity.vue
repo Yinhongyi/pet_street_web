@@ -1,7 +1,7 @@
 <template>
   <div class="add-commodity" v-loading="loading">
     <!--<y-tab class="tab" :tabList="tabList" @change="changeTab($event)"></y-tab>-->
-    <div class="title-line">{{config&&config.id ? '更新' : '新增'}}商品信息</div>
+    <div class="title-line">{{commodityId ? '更新' : '新增'}}商品信息</div>
     <div class="container">
       <!--选择种类-->
       <div class="item-line">
@@ -169,7 +169,8 @@
         <span class="item-title" style="overflow: visible">轮播顶图/视频：</span>
       </div>
       <div class="editor-container">
-        <pet-upload v-for="(item,index) in swiperImgList" :key="index" @on-success="uploadSwiperImage($event,item)"></pet-upload>
+        <!--<pet-upload v-for="(item,index) in swiperImgList" :key="index" @on-success="uploadSwiperImage($event,item)"></pet-upload>-->
+        <pet-upload :imgUrl="commodityData.topDrawUrl" @on-success="uploadSwiperImage($event,item)"></pet-upload>
       </div>
       <!--状态-->
       <div class="item-line" v-if="config&&config.id">

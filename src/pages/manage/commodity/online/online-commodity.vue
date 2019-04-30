@@ -25,7 +25,7 @@
     </div>
     <div class="list-title">
       <span>宠物商品设置</span>
-      <span class="add" @click="$router.push({path: '/manage/commodity/add'})">新增</span>
+      <span class="add" @click="$router.push({path: '/manage/commodity/addOrEdit'})">新增</span>
     </div>
     <div class="list-table">
       <table class="table" v-loading="loading">
@@ -43,19 +43,19 @@
         </thead>
         <tbody>
         <tr v-for="(item,index) in commodityList" :key="index">
-          <td style="width: 10%">{{index}}</td>
-          <td style="width: 12%">{{item.name}}</td>
+          <td style="width: 10%">{{index+1}}</td>
+          <td style="width: 12%">{{item.classificName}}</td>
           <td style="width: 20%">
-            <img class="img-in-table" :src="item.thumbnail">
+            <img class="img-in-table" :src="item.thumbnailUrl">
           </td>
-          <td style="width: 10%">{{item.petSex}}</td>
+          <td style="width: 10%">{{item.petSex === '01' ? '男' : '女'}}</td>
           <td style="width: 10%">{{item.prodPrice}}</td>
-          <td style="width: 12%">{{item.createTime}}</td>
-          <td style="width: 10%">{{item.upperStatus}}</td>
+          <td style="width: 12%">{{item.petBirthday}}</td>
+          <td style="width: 10%">{{item.prodStatus}}</td>
           <td style="width: 30%">
-            <div>上架</div>
-            <div>下架</div>
-            <div @click="$router.push({path: '/manage/commodity/add', query: {id: item.id}})">修改</div>
+            <div @click="commodityHandle(item.id, 'up')">上架</div>
+            <div @click="commodityHandle(item.id, 'down')">下架</div>
+            <div @click="$router.push({path: '/manage/commodity/addOrEdit', query: {id: item.id}})">修改</div>
             <div @click="preview">预览</div>
           </td>
         </tr>
@@ -119,17 +119,19 @@ export default {
     //获取商品列表
     getCommodityList(){
       let params = {
-        "classificName": "string",
+        "classificName": "",
         "id": 0,
-        "prodStatus": "string",
-        "salesTime": "string"
+        "pageNum": 1,
+        "pageSize": 10,
+        "prodStatus": "",
+        "salesTime": ""
       };
-      let type = 'online';
       this.loading = true;
-      this.$http.get('api/mgmt/mall/prod/query/'+ type, params).then((res) => {
+      this.$http.post('api/mgmt/mall/prod/query/online', params).then((res) => {
         this.loading = false;
         if (res.code === 1000) {
-          this.commodityList = res.data;
+          this.commodityList = res.data.rows;
+          console.log(this.commodityList)
         }else{
           this.$message({
             message: res.message,
@@ -148,6 +150,18 @@ export default {
     },
     //预览
     preview(){},
+    //
+    commodityHandle(id, type){
+      let params = {
+        ids: id,
+        isUpper: type === 'up'
+      };
+      this.$http.post('api/mgmt/mall/prod/handle',params).then((res)=>{
+        if(res.code === 1000){
+
+        }
+      })
+    },
   },
   created(){
     this.getCommodityList();

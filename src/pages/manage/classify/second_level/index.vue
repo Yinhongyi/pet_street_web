@@ -11,8 +11,8 @@
         </el-option>
       </el-select>
     </div>
-    <div class="list-table">
-      <table class="table" v-loading="loading">
+    <div class="list-table" v-loading="loading">
+      <table class="table">
         <thead>
         <tr>
           <th>序号</th>

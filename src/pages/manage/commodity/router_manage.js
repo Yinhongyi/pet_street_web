@@ -3,11 +3,11 @@ export default {
   path: '/manage/commodity',
   name: 'manage_commodity',
   component: r => require.ensure([], () => r(require('./index.vue')), 'manage_commodity'),
-  redirect: '/manage/commodity/add',
+  redirect: '/manage/commodity/online',
   children: [
     {
-      path: 'add',
-      name: 'add',
+      path: 'addOrEdit',
+      name: 'addOrEdit',
       component: r =>  require.ensure([], () => r(require('./add/add-commodity')), 'add-commodity'),
     },
     {

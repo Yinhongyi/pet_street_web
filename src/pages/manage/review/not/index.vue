@@ -16,8 +16,8 @@
             </el-select>
       -->
     </div>
-    <div class="list-table">
-      <table class="table" v-loading="false">
+    <div class="list-table" v-loading="loading">
+      <table class="table">
         <thead>
         <tr>
           <th>checkbox</th>
@@ -30,22 +30,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="cursor_pointer" @click="isShowDetail = true">
+        <tr v-for="(item,index) in unauditedList" :key="index" class="cursor_pointer" @click="isShowDetail = true">
           <td style="width: 4%">checkbox</td>
-          <td style="width: 8%">1</td>
-          <td style="width: 8%">比熊</td>
-          <td style="width: 20%">图片</td>
-          <td style="width: 40%">
-            性情开朗、活泼、聪明、勇敢、机警、感情丰富，
-            有较强的适应能力。它忠实于主人，但也具有坚强的个性。
-            温和而守规矩，敏感、顽皮、且挚爱。愉快的态度是这个品种的特点，
-            而且很容易因为小事情而满足。虽然个子小，卷毛比熊犬颇有个性，
-            天性活泼、爱好自由。
+          <td style="width: 8%">{{index+1}}</td>
+          <td style="width: 8%">{{item.classificName}}</td>
+          <td style="width: 20%">
+            <img class="img-in-table" :src="item.thumbnailUrl">
           </td>
-          <td style="width: 10%">2019-03-12</td>
+          <td style="width: 40%">
+            {{item.prodDesc}}
+          </td>
+          <td style="width: 10%">{{item.createTime}}</td>
           <td style="width: 10%">
-            <div class="color-green cursor_pointer" @click="pass()">通过</div>
-            <div class="color-red cursor_pointer" @click="back()">退回</div>
+            <div class="color-green cursor_pointer" @click.stop="pass()">通过</div>
+            <div class="color-red cursor_pointer" @click.stop="back()">退回</div>
           </td>
         </tr>
         </tbody>
@@ -100,6 +98,8 @@ export default {
       currentPage: 1,
       isShowDetail: false,
       detail: {},
+      loading: false,
+      unauditedList: []
     }
   },
   methods:{
@@ -107,9 +107,20 @@ export default {
     selectFilterStatus(data){
 
     },
-    //获取商品列表
-    getCommodityList(){
-
+    //获取未审核列表
+    getUnauditedList(){
+      let params = {
+        pageNum: 1,
+        pageSize: 10,
+        prodId: ''
+      }
+      this.loading = true;
+      this.$http.post('api/mgmt/platform/prod/query/unaudited', params).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.unauditedList = res.data.rows;
+        }
+      })
     },
     //分页器页码改变
     handleSizeChange(data){
@@ -125,7 +136,7 @@ export default {
     back(){},
   },
   created(){
-    this.getCommodityList();
+    this.getUnauditedList();
   },
 }
 </script>
@@ -157,6 +168,12 @@ export default {
     }
     .list-table{
       overflow: auto;
+      table{
+        .img-in-table{
+          width: 80px;
+          height: 80px;
+        }
+      }
       .pagination{
         float: right;
         margin: 12px;

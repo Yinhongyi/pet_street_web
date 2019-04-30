@@ -16,8 +16,8 @@
             </el-select>
       -->
     </div>
-    <div class="list-table">
-      <table class="table" v-loading="false">
+    <div class="list-table" v-loading="loading">
+      <table class="table">
         <thead>
         <tr>
           <th>编号</th>
@@ -30,16 +30,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td style="width: 8%">1</td>
-          <td style="width: 8%">比熊</td>
-          <td style="width: 20%">图片</td>
-          <td style="width: 40%">
-            性情开朗、活泼、聪明、勇敢、机警、感情丰富，
-            有较强的适应能力。它忠实于主人，但也具有坚强的个性。
-            温和而守规矩，敏感、顽皮、且挚爱。愉快的态度是这个品种的特点，
-            而且很容易因为小事情而满足。虽然个子小，卷毛比熊犬颇有个性，
-            天性活泼、爱好自由。
+        <tr v-for="(item,index) in auditedList" :key="index">
+          <td style="width: 8%">{{index+1}}</td>
+          <td style="width: 8%">{{item.classificName}}</td>
+          <td style="width: 20%">
+            <img class="img-in-table" :src="item.thumbnailUrl">
+          </td>
+          <td style="width: 38%">
+            {{item.prodDesc}}
           </td>
           <td style="width: 8%">
             <span>通过</span>
@@ -47,7 +45,7 @@
           <td style="width: 8%">
             <span>可提现</span>
           </td>
-          <td style="width: 10%">2019-03-12</td>
+          <td style="width: 12%">{{item.createTime.split(' ')[0]}}<br>{{item.createTime.split(' ')[1]}}</td>
         </tr>
         </tbody>
       </table>
@@ -96,6 +94,8 @@ export default {
         },
       ],
       currentPage: 1,
+      loading: false,
+      auditedList: [],
     }
   },
   methods:{
@@ -103,8 +103,20 @@ export default {
     selectFilterStatus(data){
 
     },
-    //获取商品列表
-    getCommodityList(){
+    //获取已审核列表
+    getAuditedList(){
+      let params = {
+        pageNum: 1,
+        pageSize: 10,
+        prodId: ''
+      }
+      this.loading = true;
+      this.$http.post('api/mgmt/platform/prod/query/audited', params).then((res)=>{
+        this.loading = false;
+        if(res.code === 1000){
+          this.auditedList = res.data.rows;
+        }
+      })
 
     },
     //分页器页码改变
@@ -121,7 +133,7 @@ export default {
     back(){},
   },
   created(){
-    this.getCommodityList();
+    this.getAuditedList();
   },
 }
 </script>
@@ -152,6 +164,12 @@ export default {
     }
     .list-table{
       overflow: auto;
+      table{
+        .img-in-table{
+          width: 80px;
+          height: 80px;
+        }
+      }
       .pagination{
         float: right;
         margin: 12px;

@@ -9,7 +9,7 @@ const menuList = [
       {
         name: '新增商品',
         icon: '',
-        path: '/manage/commodity/add',
+        path: '/manage/commodity/addOrEdit',
         id: 1,
         parent_id: 1
       },
