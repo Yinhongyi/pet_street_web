@@ -334,7 +334,7 @@ export default {
     //设置资质保障
     setCommodityGuarantee(){
       this.guaranteeList.forEach((item,index)=>{
-        this.$set(item, 'isChecked', false)
+        this.$set(item, 'isChecked', this.commodityData.guarantee.indexOf(item.dictValue) > -1)
       })
     },
     //改变资质保障实时设置接口所需参数格式
@@ -430,6 +430,7 @@ export default {
         this.loading = false;
         if(res.code === 1000){
           this.commodityData = res.data;
+          this.setCommodityGuarantee();
         }
       })
     },

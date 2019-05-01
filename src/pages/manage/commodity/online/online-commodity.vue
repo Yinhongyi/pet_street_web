@@ -27,8 +27,8 @@
       <span>宠物商品设置</span>
       <span class="add" @click="$router.push({path: '/manage/commodity/addOrEdit'})">新增</span>
     </div>
-    <div class="list-table">
-      <table class="table" v-loading="loading">
+    <div class="list-table" v-loading="loading">
+      <table class="table">
         <thead>
         <tr>
           <th>编号</th>
@@ -53,10 +53,10 @@
           <td style="width: 12%">{{item.petBirthday}}</td>
           <td style="width: 10%">{{item.prodStatus}}</td>
           <td style="width: 30%">
-            <div @click="commodityHandle(item.id, 'up')">上架</div>
-            <div @click="commodityHandle(item.id, 'down')">下架</div>
-            <div @click="$router.push({path: '/manage/commodity/addOrEdit', query: {id: item.id}})">修改</div>
-            <div @click="preview">预览</div>
+            <div class="cursor_pointer" @click="commodityHandle(item.id, 'up')">上架</div>
+            <div class="cursor_pointer" @click="commodityHandle(item.id, 'down')">下架</div>
+            <div class="cursor_pointer" @click="$router.push({path: '/manage/commodity/addOrEdit', query: {id: item.id}})">修改</div>
+            <div class="cursor_pointer" @click="preview">预览</div>
           </td>
         </tr>
         </tbody>
