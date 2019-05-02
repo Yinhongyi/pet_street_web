@@ -5,6 +5,7 @@ const menuList = [
     icon: '',
     path: '/manage/commodity',
     id: 1,
+    permission: ['2'],
     children: [
       {
         name: '新增商品',
@@ -34,6 +35,7 @@ const menuList = [
     icon: '',
     path: '/manage/order',
     id: 2,
+    permission: ['2'],
     children: [
       {
         name: '列表',
@@ -49,6 +51,7 @@ const menuList = [
     icon: '',
     path: '/manage/funds',
     id: 3,
+    permission: ['2'],
     children: [
       {
         name: '我的资金',
@@ -64,6 +67,7 @@ const menuList = [
     icon: '',
     path: '/manage/review',
     id: 4,
+    permission: ['4'],
     children: [
       {
         name: '未审核',
@@ -86,6 +90,7 @@ const menuList = [
     icon: '',
     path: '/manage/classify',
     id: 5,
+    permission: ['4'],
     children: [
       {
         name: '一级分类',
@@ -108,8 +113,10 @@ const menuList = [
     icon: '',
     path: '/manage/ad/list',
     id: 6,
+    permission: ['4'],
     children: []
   },
+/*
   {
     name: '设置',
     icon: '',
@@ -132,6 +139,7 @@ const menuList = [
       },
     ]
   },
+*/
 ]
 export {
   menuList

@@ -120,9 +120,7 @@ export default {
       this.isShowNewSecondClassify = true;
     },
     del(item){
-      let params = {
-        ids: [item.id]
-      }
+      let params = [item.id];
       this.loading = true;
 
       this.$http.delete('api/mgmt/platform/classific/del',{data:params}).then((res)=>{

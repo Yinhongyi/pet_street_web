@@ -2,7 +2,7 @@
   <div id="app" v-loading="$store.state.loading">
     <transition :name="transitionName">
       <keep-alive>
-        <router-view class="app"></router-view>
+        <router-view v-if="!$store.state.loading" class="app"></router-view>
       </keep-alive>
     </transition>
   </div>

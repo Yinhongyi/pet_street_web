@@ -19,8 +19,8 @@
       <span class="add" @click="$router.push({path: '/manage/commodity/add'})">新增</span>
     </div>
 -->
-    <div class="list-table">
-      <table class="table" v-loading="false">
+    <div class="list-table" v-loading="loading">
+      <table class="table">
         <thead>
         <tr>
           <th>订单编号</th>
@@ -134,6 +134,7 @@ export default {
   components: {},
   data(){
     return {
+      loading: '',
       orderList: [],
       filterStatus: '',
       statusConditions: [
@@ -184,7 +185,9 @@ export default {
           // "WAIT_FOR_PAY", "CANCEL", "PAYING", "WAIT_FOR_DELIVERY", "DELIVERED", "RECEIVED", "EVALUATED", "FINISH"
         // ]
       };
+      this.loading = true;
       this.$http.post('api/mgmt/mall/query', params).then((res)=>{
+        this.loading = false;
         if(res.code === 1000){
           console.log(res)
         }

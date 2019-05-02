@@ -113,9 +113,7 @@ export default {
       this.isShowNewFirstClassify = true;
     },
     del(item){
-      let params = {
-        ids: item.id
-      }
+      let params = [item.id];
       this.loading = true;
       // todo
       this.$http.delete('api/mgmt/platform/classific/del',{data: params}).then((res)=>{

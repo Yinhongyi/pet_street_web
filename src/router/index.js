@@ -26,7 +26,9 @@ const routers = [
     component: r => require.ensure([], () => r(require('@/components/layout/layout-manage.vue')), 'layout_manage'),
     redirect: to => {
       if(localStorage.P_S_TOKEN_KEY) {
-        return '/manage/commodity'
+        let path = '';
+        localStorage.P_S_USER_TYPE === '2' ? path = '/manage/commodity' : path = '/manage/review';
+        return path;
       }else{
         return '/login'
       }

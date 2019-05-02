@@ -1,6 +1,7 @@
 <template>
   <div class="menu">
-    <ul v-for="(menu,index) in menuList"
+    <ul v-for="(menu,index) in menuList" :per="menu.permission" :type="userType"
+        v-if="menu.permission.indexOf(userType) > -1"
         :key="index"
         :class="{'border-b': index < menuList.length - 1}">
       <li class="first-menu"
@@ -31,6 +32,7 @@ export default {
       menuList: menuList,
       parent_id: 0,
       selectedMenu: '',
+      userType: '',
     }
   },
   methods:{
@@ -45,6 +47,7 @@ export default {
   },
   created () {
     this.selectedMenu = this.$route.path;
+    this.userType = localStorage.getItem('P_S_USER_TYPE');
   },
   watch: {
     '$route.path'(value){

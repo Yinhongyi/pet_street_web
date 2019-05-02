@@ -37,6 +37,7 @@
       <transition name="pulse">
         <div v-if="isShowTips">登陆成功</div>
       </transition>
+      <div v-if="loadingFinish">数据加载完毕</div>
     </div>
   </div>
 </template>
@@ -71,6 +72,7 @@ export default {
       userName: '',
       userPassword: '',
       loading: false,
+      loadingFinish: false,
     }
   },
   methods:{
@@ -89,6 +91,7 @@ export default {
         if(res.code === 1000){
           localStorage.setItem('P_S_TOKEN_KEY', res.data&&res.data.token);
           localStorage.setItem('P_S_USER_INFO', JSON.stringify(res.data&&res.data.userInfo || {}));
+          localStorage.setItem('P_S_USER_TYPE', this.userType);
           this.animationSwitch();
         }else{
           this.$message({
@@ -111,10 +114,10 @@ export default {
         this.isShowTips = true;
       }, 1700)
       setTimeout(()=>{
-        this.$router.push({path: '/manage'})
+        this.$router.push({path: '/manage'});
       }, 2700)
       setTimeout(()=>{
-        this.isShowLoginPage = true;
+        this.loadingFinish = true;
         this.isShowIcon = false;
         this.isShowTips = false;
       }, 3000)

@@ -24,7 +24,9 @@ export default {
     quit(){
       localStorage.removeItem('P_S_TOKEN_KEY');
       localStorage.removeItem('P_S_USER_INFO');
+      localStorage.removeItem('P_S_USER_TYPE');
       this.$router.push({path: '/login'});
+      location.reload();
     }
   },
   created () {

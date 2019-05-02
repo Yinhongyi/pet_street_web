@@ -119,6 +119,11 @@ export default {
         this.loading = false;
         if(res.code === 1000){
           this.unauditedList = res.data.rows;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
         }
       })
     },

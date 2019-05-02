@@ -53,10 +53,10 @@
           <td style="width: 12%">{{item.petBirthday}}</td>
           <td style="width: 10%">{{item.prodStatus}}</td>
           <td style="width: 30%">
-            <div class="cursor_pointer" @click="commodityHandle(item.id, 'up')">上架</div>
-            <div class="cursor_pointer" @click="commodityHandle(item.id, 'down')">下架</div>
-            <div class="cursor_pointer" @click="$router.push({path: '/manage/commodity/addOrEdit', query: {id: item.id}})">修改</div>
-            <div class="cursor_pointer" @click="preview">预览</div>
+            <span class="cursor_pointer color-red" @click="commodityHandle(item.id, 'up')">上架</span>
+            <span class="cursor_pointer color-red" @click="commodityHandle(item.id, 'down')">下架</span>
+            <span class="cursor_pointer color-green" @click="$router.push({path: '/manage/commodity/addOrEdit', query: {id: item.id}})">修改</span>
+            <span class="cursor_pointer color-green" @click="preview">预览</span>
           </td>
         </tr>
         </tbody>
@@ -119,12 +119,12 @@ export default {
     //获取商品列表
     getCommodityList(){
       let params = {
-        "classificName": "",
-        "id": 0,
+        "classificName": this.filterName,
+        // "id": 0,
         "pageNum": 1,
         "pageSize": 10,
         "prodStatus": "",
-        "salesTime": ""
+        "salesTime": this.filterTime
       };
       this.loading = true;
       this.$http.post('api/mgmt/mall/prod/query/online', params).then((res) => {
