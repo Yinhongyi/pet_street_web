@@ -291,9 +291,10 @@ export default {
 </script>
 <style lang="less" scoped>
   .new-or-edit-second-classify{
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: 212px;
     right: 0;
     background-color: white;
     .title-line{

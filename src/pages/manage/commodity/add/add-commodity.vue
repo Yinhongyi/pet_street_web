@@ -173,9 +173,10 @@
         <pet-upload :imgUrl="commodityData.topDrawUrl" @on-success="uploadSwiperImage($event,item)"></pet-upload>
       </div>
       <!--状态-->
-      <div class="item-line" v-if="config&&config.id">
+      <div class="item-line" v-if="commodityId">
         <span class="item-title">状态切换：</span>
-        <button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="downCommodity">下架</button>
+        <el-button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="downCommodity" :loading="switchStatus">下架</el-button>
+        <!--<button class="btn down-btn" :class="{'selected': isSelectedDownBtn}" @click="downCommodity" :loading="switchStatus">下架</button>-->
         <span class="tips">因特殊情况需手动下架商品，请谨慎操作</span>
       </div>
       <!--按钮-->
@@ -274,6 +275,7 @@ export default {
       vaccinesOrderList: [],
       expParasiteOrderList: [],
       commodityId: '',
+      switchStatus: false,
     }
   },
   methods:{
@@ -413,7 +415,9 @@ export default {
         isUpper: !this.isSelectedDownBtn
       }
       //当前是上架状态，点击下架
+      this.switchStatus = true;
       this.$http.post('api/mgmt/mall/prod/handle',params).then((res)=>{
+        this.switchStatus = false;
         if(res.code === 1000){
           this.$message({
             message: this.isSelectedDownBtn ? '下' : '上' + '架成功',

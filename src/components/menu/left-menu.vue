@@ -78,12 +78,14 @@ export default {
       }
       li.first-menu.selected{
         background-color: #F55D54;
+        color: white;
       }
       li.second-menu{
         padding-left: 30px;
       }
       li.second-menu.selected{
         background-color: #F55D54;
+        color: white;
       }
 /*
       li.second-menu:hover{
