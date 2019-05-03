@@ -1,0 +1,2 @@
+webpackJsonp([13],{"+Imw":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r={render:function(){var e=this.$createElement;return(this._self._c||e)("router-view",{staticClass:"funds"})},staticRenderFns:[]};var u=n("VU/8")({data:function(){return{}}},r,!1,function(e){n("3eUZ")},null,null);t.default=u.exports},"3eUZ":function(e,t){}});
+//# sourceMappingURL=13.ba947ab5387dceb8b565.js.map
