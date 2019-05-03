@@ -374,11 +374,115 @@ export default {
     preview(){},
     //审核
     audit(){
-      // todo  check
+      if(!this.checkValid()) return;
       let params = _cloneDeep(this.commodityData);
 
       this.commodityId ? this.updateCommodity(params) : this.addCommodity(params);
       this.loading = true;
+    },
+    //检查必填项
+    checkValid(){
+      let result = true;
+      let checkDelivery = (list)=>{
+        let hasInput = false;
+        list.forEach((item,index)=>{
+          item.deliveryPrice !== '' ? hasInput = true : '';
+        })
+        return hasInput;
+      };
+      let checkPrevention = (list)=>{
+        let hasInput = false;
+        list.forEach((item,index)=>{
+          item.ventionOrder&&item.ventionModel&&item.ventionDate ? hasInput = true : '';
+        })
+        return hasInput;
+      };
+      
+      if(!this.commodityData.classificId){
+        this.$message({
+          message: '请选择分类',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.petSex){
+        this.$message({
+          message: '请选择性别',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.petBirthday){
+        this.$message({
+          message: '请选择年龄',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.petGrade){
+        this.$message({
+          message: '请选择品级',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!checkDelivery(this.commodityData.delivery)){
+        this.$message({
+          message: '请填写配送信息',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.guarantee){
+        this.$message({
+          message: '请选择资质保障',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.prodPrice){
+        this.$message({
+          message: '请填写商品价格',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!checkPrevention(this.commodityData.vaccines)){
+        this.$message({
+          message: '请填写防疫信息',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!checkPrevention(this.commodityData.expParasite)){
+        this.$message({
+          message: '请填写驱虫信息',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.prodDesc){
+        this.$message({
+          message: '请填写商品描述',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.thumbnailUrl){
+        this.$message({
+          message: '请上传商品缩略图',
+          type: 'error'
+        })
+        result = false;
+      }
+      else if(!this.commodityData.topDrawUrl){
+        this.$message({
+          message: '请上传轮播顶图',
+          type: 'error'
+        })
+        result = false;
+      }
+      return result;
     },
     //新增商品
     addCommodity(params){
