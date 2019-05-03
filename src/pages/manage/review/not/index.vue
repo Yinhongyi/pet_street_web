@@ -49,6 +49,7 @@
         </tbody>
       </table>
 
+<!--
       <el-pagination
         class="pagination"
         @size-change="handleSizeChange"
@@ -58,6 +59,7 @@
         layout="prev, pager, next, jumper"
         :total="1000">
       </el-pagination>
+-->
     </div>
 
     <detail v-if="isShowDetail" :config="detail" @on-cancel="isShowDetail = false"></detail>

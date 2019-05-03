@@ -49,9 +49,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="5"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
     </div>
 
@@ -84,6 +84,8 @@ export default {
       secondClassifyList: [],
       loading: false,
       currentPage: 1,
+      pageSize: 50,
+      total: 0,
       isShowNewSecondClassify: false,
       classifyData: {},
     }
@@ -96,10 +98,11 @@ export default {
     //获取商品列表
     getSecondClassifyList(){
       this.loading = true;
-      this.$http.get('api/mgmt/public/classific/query?level=2&status='+this.filterStatus).then((res)=>{
+      this.$http.get('api/mgmt/public/classific/query?level=2&status='+this.filterStatus+'&pageNum='+this.currentPage+'&pageSize='+this.pageSize).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
-          this.secondClassifyList = res.data
+          this.secondClassifyList = res.data&&res.data.rows || [];
+          this.total = res.data&&res.data.total || 0;
         }else{
           this.$message({
             message: res.message,

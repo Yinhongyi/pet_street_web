@@ -1,7 +1,7 @@
 <template>
   <div class="ad-manage">
     <!--<div class="title-line">搜索条件</div>-->
-    <div class="new-ad">
+    <div class="new-ad" v-if="false">
       <!--<el-input v-model="input" placeholder="请输入商品编号"></el-input>-->
       <el-button type="danger" @click="isShowNewAd = true">新增广告</el-button>
 
@@ -16,7 +16,7 @@
             </el-select>
       -->
     </div>
-    <div class="list-table">
+    <div class="list-table" v-if="false">
       <table class="table" v-loading="false">
         <thead>
         <tr>
@@ -56,6 +56,7 @@
       </el-pagination>
     </div>
 
+    <div style="margin: 100px;font-size: 40px;">敬请期待...</div>
     <new-or-edit v-if="isShowNewAd" :config="adData" @on-cancel="isShowNewAd = false"></new-or-edit>
 
   </div>

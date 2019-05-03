@@ -10,7 +10,7 @@
           <el-option
             v-for="item in firstClassifyList"
             :key="item.id"
-            :label="item.name"
+            :label="item.classificName"
             :value="item.id">
           </el-option>
         </el-select>
@@ -18,7 +18,7 @@
           <el-option
             v-for="item in secondClassifyList"
             :key="item.id"
-            :label="item.name"
+            :label="item.classificName"
             :value="item.id">
           </el-option>
         </el-select>
@@ -293,7 +293,7 @@ export default {
     },
     //获取一级分类
     getFirstClassifyList(){
-      this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status=0').then((res) => {
+      this.$http.get('api/mgmt/public/classific/children?pId=0').then((res) => {
         if (res.code === 1000) {
           this.firstClassifyList = res.data;
         }else{
@@ -306,7 +306,7 @@ export default {
     },
     //获取二级分类
     getSecondClassifyList(id){
-      this.$http.get('api/mgmt/public/classific/query?level=2&pid='+id+'&status=0').then((res) => {
+      this.$http.get('api/mgmt/public/classific/children?pId='+id).then((res) => {
         if (res.code === 1000) {
           this.secondClassifyList = res.data;
         }else{

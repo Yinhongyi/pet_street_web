@@ -43,9 +43,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="100"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
     </div>
     <new-or-edit v-if="isShowNewFirstClassify" :config="classifyData" @on-quit="refreshList()"></new-or-edit>
@@ -76,6 +76,8 @@ export default {
       ],
       firstClassifyList: [],
       currentPage: 1,
+      pageSize: 50,
+      total: 0,
       loading: false,
       isShowNewFirstClassify: false,
       classifyData: {}
@@ -89,10 +91,11 @@ export default {
     //获取商品列表
     getFirstClassifyList(){
       this.loading = true;
-      this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status='+this.filterStatus).then((res)=>{
+      this.$http.get('api/mgmt/public/classific/query?level=1&pid=0&status='+this.filterStatus+'&pageNum='+this.currentPage+'&pageSize='+this.pageSize).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
-          this.firstClassifyList = res.data;
+          this.firstClassifyList = res.data&&res.data.rows || [];
+          this.total = res.data&&res.data.total || 0;
         }else{
           this.$message({
             message: res.message,
