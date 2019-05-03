@@ -397,7 +397,7 @@ export default {
         })
         return hasInput;
       };
-      
+
       if(!this.commodityData.classificId){
         this.$message({
           message: '请选择分类',
