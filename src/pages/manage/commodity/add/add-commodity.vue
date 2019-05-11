@@ -6,19 +6,19 @@
       <!--选择种类-->
       <div class="item-line">
         <span class="item-title">选择种类：</span>
-        <el-select v-model="firstClassify" placeholder="请选择" @change="selectFirstClassify($event)">
+        <el-select v-model="firstClassify" placeholder="请选择" @change="selectFirstClassify($event)" v-loading="loadFirstClassify">
           <el-option
             v-for="item in firstClassifyList"
             :key="item.id"
-            :label="item.classificName"
+            :label="item.name"
             :value="item.id">
           </el-option>
         </el-select>
-        <el-select v-model="commodityData.classificId" placeholder="请选择" @change="selectSecondClassify($event)">
+        <el-select v-model="commodityData.classificId" placeholder="请选择" @change="selectSecondClassify($event)" v-loading="loadSecondClassify">
           <el-option
             v-for="item in secondClassifyList"
             :key="item.id"
-            :label="item.classificName"
+            :label="item.name"
             :value="item.id">
           </el-option>
         </el-select>
@@ -170,7 +170,7 @@
       </div>
       <div class="editor-container">
         <!--<pet-upload v-for="(item,index) in swiperImgList" :key="index" @on-success="uploadSwiperImage($event,item)"></pet-upload>-->
-        <pet-upload :imgUrl="commodityData.topDrawUrl" @on-success="uploadSwiperImage($event,item)"></pet-upload>
+        <pet-upload :imgUrl="commodityData.topDrawUrl" @on-success="uploadSwiperImage($event)"></pet-upload>
       </div>
       <!--状态-->
       <div class="item-line" v-if="commodityId">
@@ -276,6 +276,8 @@ export default {
       expParasiteOrderList: [],
       commodityId: '',
       switchStatus: false,
+      loadFirstClassify: false,
+      loadSecondClassify: false,
     }
   },
   methods:{
@@ -293,7 +295,9 @@ export default {
     },
     //获取一级分类
     getFirstClassifyList(){
+      this.loadFirstClassify = true;
       this.$http.get('api/mgmt/public/classific/children?pId=0').then((res) => {
+        this.loadFirstClassify = false;
         if (res.code === 1000) {
           this.firstClassifyList = res.data;
         }else{
@@ -306,7 +310,9 @@ export default {
     },
     //获取二级分类
     getSecondClassifyList(id){
+      this.loadSecondClassify = true;
       this.$http.get('api/mgmt/public/classific/children?pId='+id).then((res) => {
+        this.loadSecondClassify = false;
         if (res.code === 1000) {
           this.secondClassifyList = res.data;
         }else{
@@ -365,7 +371,7 @@ export default {
     uploadSmallImage(data){
       this.commodityData.thumbnailUrl = data.imageSmallUrl
     },
-    uploadSwiperImage(data,item){
+    uploadSwiperImage(data){
       this.commodityData.topDrawUrl = data.imageSmallUrl;
       // item.imgUrl = data.imageSmallUrl;
       // this.swiperImgList.length < 5 ? this.swiperImgList.push({imgUrl:''}) : '';
@@ -398,6 +404,7 @@ export default {
         return hasInput;
       };
 
+      // this.commodityData.classificId = 20;
       if(!this.commodityData.classificId){
         this.$message({
           message: '请选择分类',

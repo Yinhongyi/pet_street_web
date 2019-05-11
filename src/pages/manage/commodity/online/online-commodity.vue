@@ -36,7 +36,7 @@
           <th>缩略图</th>
           <th>性别</th>
           <th>价格</th>
-          <th>时间</th>
+          <th>生日</th>
           <th>状态</th>
           <th>操作</th>
         </tr>
@@ -48,10 +48,10 @@
           <td style="width: 20%">
             <img class="img-in-table" :src="item.thumbnailUrl">
           </td>
-          <td style="width: 10%">{{item.petSex === '01' ? '男' : '女'}}</td>
+          <td style="width: 10%">{{item.petSexDesc}}</td>
           <td style="width: 10%">{{item.prodPrice}}</td>
           <td style="width: 12%">{{item.petBirthday}}</td>
-          <td style="width: 10%">{{item.prodStatus}}</td>
+          <td style="width: 10%">{{item.prodStatusDesc}}</td>
           <td style="width: 30%">
             <span class="cursor_pointer color-red" @click="commodityHandle(item.id, 'up')">上架</span>
             <span class="cursor_pointer color-red" @click="commodityHandle(item.id, 'down')">下架</span>
@@ -67,9 +67,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="100"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
     </div>
   </div>
@@ -107,6 +107,8 @@ export default {
         },
       ],
       currentPage: 1,
+      pageSize: 10,
+      total: 0,
       commodityList: [],
       loading: false
     }
@@ -121,8 +123,8 @@ export default {
       let params = {
         "classificName": this.filterName,
         // "id": 0,
-        "pageNum": 1,
-        "pageSize": 10,
+        "pageNum": this.currentPage,
+        "pageSize": this.pageSize,
         "prodStatus": "",
         "salesTime": this.filterTime
       };
@@ -130,6 +132,7 @@ export default {
       this.$http.post('api/mgmt/mall/prod/query/online', params).then((res) => {
         this.loading = false;
         if (res.code === 1000) {
+          this.total = res.data.total;
           this.commodityList = res.data.rows;
           console.log(this.commodityList)
         }else{

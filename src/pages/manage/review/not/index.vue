@@ -20,7 +20,7 @@
       <table class="table">
         <thead>
         <tr>
-          <th>checkbox</th>
+          <!--<th>checkbox</th>-->
           <th>序号</th>
           <th>商品名称</th>
           <th>图片</th>
@@ -30,8 +30,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(item,index) in unauditedList" :key="index" class="cursor_pointer" @click="isShowDetail = true">
-          <td style="width: 4%">checkbox</td>
+        <tr v-for="(item,index) in unauditedList" :key="index" class="cursor_pointer" @click="showDetail(item)">
+          <!--<td style="width: 4%">checkbox</td>-->
           <td style="width: 8%">{{index+1}}</td>
           <td style="width: 8%">{{item.classificName}}</td>
           <td style="width: 20%">
@@ -42,27 +42,41 @@
           </td>
           <td style="width: 10%">{{item.createTime}}</td>
           <td style="width: 10%">
-            <div class="color-green cursor_pointer" @click.stop="pass()">通过</div>
-            <div class="color-red cursor_pointer" @click.stop="back()">退回</div>
+            <div class="color-green cursor_pointer" @click.stop="audit(item, true)">通过</div>
+            <div class="color-red cursor_pointer" @click.stop="audit(item, false)">退回</div>
           </td>
         </tr>
         </tbody>
       </table>
 
-<!--
       <el-pagination
         class="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="100"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
--->
     </div>
 
-    <detail v-if="isShowDetail" :config="detail" @on-cancel="isShowDetail = false"></detail>
+    <detail v-if="isShowDetail" :config="detail" @on-cancel="isShowDetail = false" @on-audit="openAuditDialog"></detail>
+
+    <el-dialog
+      v-loading="isAudit"
+      title="审核"
+      :visible.sync="auditDialogVisible"
+      width="50%"
+      center>
+      <div>
+        <span style="vertical-align: top;display: inline-block;width: 20%;">{{isAdopt?'通过理由':'退回理由'}}：</span>
+        <el-input  style="vertical-align: top;display: inline-block;width: 80%;" type="textarea" :row="4" v-model="auditNotes" placeholder="请输入理由"></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeAuditDialog">取 消</el-button>
+        <el-button type="primary" @click="confirmAudit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -98,10 +112,17 @@ export default {
         },
       ],
       currentPage: 1,
+      pageSize: 10,
+      total: 0,
       isShowDetail: false,
       detail: {},
       loading: false,
-      unauditedList: []
+      unauditedList: [],
+      auditDialogVisible: false,
+      auditId: '',
+      isAdopt: false,
+      auditNotes: '',
+      isAudit: false,
     }
   },
   methods:{
@@ -112,8 +133,8 @@ export default {
     //获取未审核列表
     getUnauditedList(){
       let params = {
-        pageNum: 1,
-        pageSize: 10,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
         prodId: ''
       }
       this.loading = true;
@@ -121,6 +142,7 @@ export default {
         this.loading = false;
         if(res.code === 1000){
           this.unauditedList = res.data.rows;
+          this.total = res.data.total;
         }else{
           this.$message({
             message: res.message,
@@ -139,8 +161,52 @@ export default {
     filterSearch(){
 
     },
-    pass(){},
-    back(){},
+    //审核
+    audit(item, boolean){
+      this.auditId = item.id
+      this.isAdopt = boolean;
+      this.auditDialogVisible = true;
+    },
+    closeAuditDialog(){
+      this.auditId = '';
+      this.auditNotes = '';
+      this.auditDialogVisible = false;
+    },
+    confirmAudit(){
+      if(!this.auditNotes){
+        this.$message({
+          message: '请输入原因',
+          type: 'error'
+        })
+        return
+      }
+      let params = {
+        auditNotes: this.auditNotes,
+        ids: this.auditId,
+        isAdopt: this.isAdopt ,
+      }
+      this.isAudit = true;
+      console.log(params);
+      this.$http.post('api/mgmt/platform/prod/audit', params).then((res)=>{
+        this.isAudit = false;
+        if(res.code === 1000){
+          this.closeAuditDialog();
+          this.isShowDetail = false;
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    openAuditDialog(data){
+      this.audit(data.item, data.boolean)
+    },
+    showDetail(item){
+      this.detail = item;
+      this.isShowDetail = true;
+    }
   },
   created(){
     this.getUnauditedList();

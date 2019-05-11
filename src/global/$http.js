@@ -1,6 +1,7 @@
 /* eslint-disable */
 import _this from '../main'
 import axios from 'axios';
+// import qs from 'qs';
 
 const ajax = () => {
   //默认Ajax配置
@@ -15,6 +16,9 @@ const ajax = () => {
     if(localStorage.getItem('P_S_TOKEN_KEY')){
       config.headers.common['TOKEN_KEY'] = localStorage.getItem('P_S_TOKEN_KEY');
     }
+    // if(config.method === 'get'){
+    //   config.data = qs.stringify(config.data);
+    // }
     return config;
   }, function (error) {
     return Promise.reject(error);

@@ -25,8 +25,9 @@
           <th>图片</th>
           <th>描述</th>
           <th>状态</th>
-          <th>提现</th>
-          <th>时间</th>
+          <!--<th>提现</th>-->
+          <th>创建时间</th>
+          <th>更新时间</th>
         </tr>
         </thead>
         <tbody>
@@ -36,31 +37,30 @@
           <td style="width: 20%">
             <img class="img-in-table" :src="item.thumbnailUrl">
           </td>
-          <td style="width: 38%">
+          <td style="width: 26%">
             {{item.prodDesc}}
           </td>
           <td style="width: 8%">
             <span>通过</span>
           </td>
-          <td style="width: 8%">
-            <span>可提现</span>
-          </td>
+          <!--<td style="width: 8%">-->
+            <!--<span>可提现</span>-->
+          <!--</td>-->
           <td style="width: 12%">{{item.createTime.split(' ')[0]}}<br>{{item.createTime.split(' ')[1]}}</td>
+          <td style="width: 12%">{{item.updateTime.split(' ')[0]}}<br>{{item.updateTime.split(' ')[1]}}</td>
         </tr>
         </tbody>
       </table>
 
-<!--
       <el-pagination
         class="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="100"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
--->
     </div>
   </div>
 </template>
@@ -96,6 +96,8 @@ export default {
         },
       ],
       currentPage: 1,
+      pageSize: 10,
+      total: 0,
       loading: false,
       auditedList: [],
     }
@@ -108,14 +110,15 @@ export default {
     //获取已审核列表
     getAuditedList(){
       let params = {
-        pageNum: 1,
-        pageSize: 10,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
         prodId: ''
       }
       this.loading = true;
       this.$http.post('api/mgmt/platform/prod/query/audited', params).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
+          this.total = res.data.total;
           this.auditedList = res.data.rows;
         }else{
           this.$message({

@@ -25,7 +25,7 @@
           <th>缩略图</th>
           <th>性别</th>
           <th>价格</th>
-          <th>时间</th>
+          <th>生日</th>
           <th>状态</th>
           <th>退回原因</th>
           <th>操作{{commodityList.length}}</th>
@@ -38,13 +38,13 @@
           <td style="width: 20%">
             <img class="img-in-table" :src="item.thumbnailUrl">
           </td>
-          <td style="width: 8%">{{item.petSex === '01' ? '男' : '女'}}</td>
+          <td style="width: 8%">{{item.petSexDesc}}</td>
           <td style="width: 8%">{{item.prodPrice}}</td>
           <td style="width: 10%">{{item.petBirthday}}</td>
-          <td style="width: 8%">{{item.prodStatus}}</td>
+          <td style="width: 8%">{{item.prodStatusDesc}}</td>
           <td style="width: 20%">图文不符</td>
           <td style="width: 10%">
-            <div class="color-green cursor_pointer" @click="edit()">修改</div>
+            <div class="color-green cursor_pointer" @click="$router.push({path: '/manage/commodity/addOrEdit', query: {id: item.id}})">修改</div>
             <div class="color-green cursor_pointer" @click="preview()">预览</div>
           </td>
         </tr>
@@ -59,9 +59,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="100"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
     </div>
   </div>
@@ -98,6 +98,8 @@ export default {
         },
       ],
       currentPage: 1,
+      pageSize: 10,
+      total: 0,
       loading: false,
       commodityList: []
     }
@@ -112,8 +114,8 @@ export default {
       let params = {
         "classificName": "",
         "id": 0,
-        "pageNum": 1,
-        "pageSize": 10,
+        "pageNum": this.currentPage,
+        "pageSize": this.pageSize,
         "prodStatus": "",
         "salesTime": ""
       };
@@ -121,6 +123,7 @@ export default {
       this.$http.post('api/mgmt/mall/prod/query/back', params).then((res) => {
         this.loading = false;
         if (res.code === 1000) {
+          this.total = res.data.total;
           this.commodityList = res.data.rows;
           console.log(this.commodityList)
         }else{
