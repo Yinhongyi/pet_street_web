@@ -1,23 +1,10 @@
 <template>
-  <div class="ad-manage">
-    <!--<div class="title-line">搜索条件</div>-->
-    <div class="new-ad" v-if="false">
-      <!--<el-input v-model="input" placeholder="请输入商品编号"></el-input>-->
+  <div class="ad-manage" v-loading="loadAdList">
+    <div class="new-ad">
       <el-button type="danger" @click="isShowNewAd = true">新增广告</el-button>
-
-      <!--
-            <el-select v-model="filterStatus" placeholder="请选择" @change="selectFilterStatus($event)">
-              <el-option
-                v-for="item in statusConditions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-      -->
     </div>
-    <div class="list-table" v-if="false">
-      <table class="table" v-loading="false">
+    <div class="list-table">
+      <table class="table">
         <thead>
         <tr>
           <th>序号</th>
@@ -56,7 +43,7 @@
       </el-pagination>
     </div>
 
-    <div style="margin: 100px;font-size: 40px;">敬请期待...</div>
+    <!--<div style="margin: 100px;font-size: 40px;">敬请期待...</div>-->
     <new-or-edit v-if="isShowNewAd" :config="adData" @on-cancel="isShowNewAd = false"></new-or-edit>
 
   </div>
@@ -96,6 +83,7 @@ export default {
       currentPage: 1,
       isShowNewAd: false,
       adData: {},
+      loadAdList: false,
     }
   },
   methods:{
@@ -103,9 +91,20 @@ export default {
     selectFilterStatus(data){
 
     },
-    //获取商品列表
-    getCommodityList(){
-
+    //获取广告列表
+    getAdList(){
+      this.loadAdList = true;
+      // this.$http.get('api/mgmt/public/classific/children?pId=0').then((res) => {
+      //   this.loadAdList = false;
+      //   if (res.code === 1000) {
+      //     this.firstClassifyList = res.data;
+      //   }else{
+      //     this.$message({
+      //       message: res.message,
+      //       type: 'error'
+      //     })
+      //   }
+      // })
     },
     //分页器页码改变
     handleSizeChange(data){
@@ -121,7 +120,7 @@ export default {
     del(){},
   },
   created(){
-    this.getCommodityList();
+    this.getAdList();
   },
 }
 </script>

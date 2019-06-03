@@ -109,10 +109,26 @@ const menuList = [
     ]
   },
   {
+    name: '文章审核',
+    icon: '',
+    path: '/manage/article/list',
+    id: 8,
+    permission: ['4'],
+    children: []
+  },
+  {
     name: '广告管理',
     icon: '',
     path: '/manage/ad/list',
     id: 6,
+    permission: ['4'],
+    children: []
+  },
+  {
+    name: 'APP版本设置',
+    icon: '',
+    path: '/manage/appVersion',
+    id: 7,
     permission: ['4'],
     children: []
   },
