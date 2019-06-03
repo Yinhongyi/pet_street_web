@@ -50,7 +50,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="文章详情" :visible.sync="articleShow" v-loading="true">
+    <el-dialog title="文章详情" :visible.sync="articleShow">
       <div class="detail-content">
         <div class="item" v-for="(item, index) in contentList" :key="index">
           <div v-if="item.indexOf('http://diaoyudaxian01.b0.upaiyun.com/fish') > -1">
@@ -59,6 +59,10 @@
           <div v-else v-html="item"></div>
         </div>
       </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="articleShow = false">取 消</el-button>
+        <el-button type="primary" @click="articleShow = false">确 定</el-button>
+      </span>
     </el-dialog>
 
   </div>
@@ -98,7 +102,8 @@ export default {
       pageSize: 10,
       total: 0,
       contentList: [],
-      articleShow: false
+      articleShow: false,
+      curArticle: {},
     }
   },
   methods: {
@@ -127,11 +132,15 @@ export default {
       this.getArticleList()
     },
     previewDetail(item){
-      let articleId = item.id;
-      this.$http.get('api/mgmt/platform/detail/'+articleId).then((res)=>{
+      this.curArticle = item;
+      this.$http.get('api/mgmt/platform/detail/'+this.curArticle.id).then((res)=>{
         if(res.code === 1000){
           let content = res.data && res.data.content
-          this.contentList = JSON.parse(content)
+          try{
+            this.contentList = JSON.parse(content)
+          }catch (e) {
+            this.contentList = [content]
+          }
           this.articleShow = true
         }else{
           this.$message({
