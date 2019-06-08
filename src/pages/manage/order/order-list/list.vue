@@ -38,21 +38,18 @@
         </thead>
         <tbody>
         <tr v-for="(item,index) in orderList" :key="index">
-          <td style="width: 10%">CGTJ1289183923829YSTY</td>
-          <td style="width: 6%">秦进辉</td>
-          <td style="width: 10%">1828921995</td>
-          <td style="width: 10%">上海市普陀区兰溪路XXXXXXXX</td>
-          <td style="width: 10%">
-            泰迪 x1 ；￥2000
-            比熊 x1 ；￥2000
-           </td>
-          <td style="width: 8%">￥4000</td>
-          <td style="width: 8%">￥4000</td>
-          <td style="width: 10%">2017-5-12 18:42:44</td>
-          <td style="width: 10%">2017-5-12 18:45:10</td>
-          <td style="width: 8%">已付款</td>
+          <td style="width: 10%">{{item.orderNo}}</td>
+          <td style="width: 6%">{{item.addressee}}</td>
+          <td style="width: 10%">{{item.contact}}</td>
+          <td style="width: 10%">{{item.address}}</td>
+          <td style="width: 10%" v-html="showOrderCommodityDetail(item.items)"></td>
+          <td style="width: 8%">{{item.payPrice}}</td>
+          <td style="width: 8%">{{item.payAmount}}</td>
+          <td style="width: 10%">{{item.createTime}}</td>
+          <td style="width: 10%">{{item.payTime}}</td>
+          <td style="width: 8%">{{item.orderStatusName}}</td>
           <td>
-            <div class="cursor_pointer" @click="openDetailDialog(item.id)">查看</div>
+            <div class="cursor_pointer" @click="openDetailDialog(item)">查看</div>
           </td>
         </tr>
         </tbody>
@@ -65,63 +62,63 @@
         :current-page.sync="currentPage"
         :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="total">
       </el-pagination>
     </div>
 
-    <el-dialog title="订单详情" :visible.sync="dialogDetailShow" v-loading="true">
+    <el-dialog title="订单详情" width="70%" :visible.sync="dialogDetailShow" v-loading="true">
       <div class="detail-content">
         <div class="item">
           <span class="left">订单号：</span>
-          <span class="right">201705271348551547</span>
+          <span class="right">{{currentDetail.orderNo}}</span>
         </div>
         <div class="item">
           <span class="left">收货人名称：</span>
-          <span class="right">靳元海</span>
+          <span class="right">{{currentDetail.addressee}}</span>
         </div>
         <div class="item">
           <span class="left">收货人电话：</span>
-          <span class="right">18616281761</span>
+          <span class="right">{{currentDetail.contact}}</span>
         </div>
         <div class="item">
           <span class="left">收货地址：</span>
-          <span class="right">上海普陀区XXXXXXXX</span>
+          <span class="right">{{currentDetail.address}}</span>
         </div>
         <div class="item">
           <span class="left">商品名称：</span>
-          <span class="right">泰迪</span>
+          <span class="right" v-html="showOrderCommodityDetail(currentDetail.items)"></span>
         </div>
         <div class="item">
           <span class="left">数量：</span>
-          <span class="right">2</span>
+          <span class="right">{{currentDetail.payOrderNo}}</span>
         </div>
         <div class="item">
           <span class="left">邮费：</span>
-          <span class="right">300元</span>
+          <!--<span class="right">{{currentDetail.orderNo}}</span>-->
         </div>
         <div class="item">
           <span class="left">实际付款金额：</span>
-          <span class="right">2300元</span>
+          <span class="right">{{currentDetail.payAmount}}</span>
         </div>
         <div class="item">
           <span class="left">支付方式：</span>
-          <span class="right">微信支付</span>
+          <span class="right">{{currentDetail.payTypeName}}</span>
         </div>
         <div class="item">
           <span class="left">购买人电话：</span>
-          <span class="right">XXXXXXXXXXX</span>
+          <!--<span class="right">{{currentDetail.orderNo}}</span>-->
         </div>
         <div class="item">
           <span class="left">购买时间：</span>
-          <span class="right">2017-05-27 13:48:55</span>
+          <!--<span class="right">{{currentDetail.orderNo}}</span>-->
         </div>
         <div class="item">
           <span class="left">支付时间：</span>
-          <span class="right">2017-05-27 13:49:00</span>
+          <!--<span class="right">{{currentDetail.orderNo}}</span>-->
         </div>
         <div class="item">
           <span class="left">支付信息：</span>
-          <span class="right">微信付款凭证： XXXXXXXXXXXXXXXXXXXXXXX</span>
+          <!--<span class="right">{{currentDetail.orderNo}}</span>-->
         </div>
       </div>
     </el-dialog>
@@ -161,6 +158,7 @@ export default {
       ],
       currentPage: 1,
       pageSize: 10,
+      total: 0,
       dialogDetailShow: false,
       currentDetail: '',
       beginCreateTime: '',
@@ -189,7 +187,9 @@ export default {
       this.$http.post('api/mgmt/mall/query', params).then((res)=>{
         this.loading = false;
         if(res.code === 1000){
-          console.log(res)
+          this.total = res.data.total;
+          this.orderList = res.data.rows;
+          console.log(this.orderList)
         }
       })
     },
@@ -201,9 +201,20 @@ export default {
 
     },
     //
-    openDetailDialog(id){
+    openDetailDialog(item){
       this.dialogDetailShow = true;
-      this.currentDetail = id;
+      this.currentDetail = item;
+      console.log(this.currentDetail)
+    },
+    showOrderCommodityDetail(items){
+      if(!items)return
+      let result = ''
+      items.forEach((item,index)=>{
+        let showText = item.itemName + '： ￥' + item.perPrice
+        let html = '<div class="order-commodity-detail" title="'+showText+'">'+showText+'</div>';
+        result += html;
+      })
+      return result
     }
   },
   created(){
@@ -268,5 +279,12 @@ export default {
         }
       }
     }
+  }
+</style>
+<style>
+  .order-list .order-commodity-detail{
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
   }
 </style>

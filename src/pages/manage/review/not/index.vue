@@ -182,7 +182,7 @@ export default {
       }
       let params = {
         auditNotes: this.auditNotes,
-        ids: this.auditId,
+        ids: [this.auditId],
         isAdopt: this.isAdopt ,
       }
       this.isAudit = true;
@@ -192,6 +192,7 @@ export default {
         if(res.code === 1000){
           this.closeAuditDialog();
           this.isShowDetail = false;
+          this.getUnauditedList();
         }else{
           this.$message({
             message: res.message,
