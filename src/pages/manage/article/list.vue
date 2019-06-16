@@ -107,23 +107,23 @@ export default {
     return {
       statusConditions: [
         {
-          label: '审核通过',
+          label: '使用中',
           value: 0
         },
         {
-          label: '待审核',
+          label: '审核中',
           value: 1
         },
         {
-          label: '文章下架',
+          label: '已停用',
           value: 2
         },
         {
-          label: '文章上架',
+          label: '已删除',
           value: 3
         },
         {
-          label: '审核拒绝',
+          label: '已拒绝',
           value: 4
         },
       ],
