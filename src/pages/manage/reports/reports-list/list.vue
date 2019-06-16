@@ -243,6 +243,7 @@ export default {
       this.$http.patch('api/mgmt/platform/reports/handle/'+this.handleReportId, params).then((res)=>{
         if(res.code === 1000){
           this.handleReportId = ''
+          this.handleDialog = false
           console.log(res)
         }
       })
