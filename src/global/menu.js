@@ -132,6 +132,14 @@ const menuList = [
     permission: ['4'],
     children: []
   },
+  {
+    name: '举报中心',
+    icon: '',
+    path: '/manage/reports',
+    id: 8,
+    permission: ['4'],
+    children: []
+  },
 /*
   {
     name: '设置',
