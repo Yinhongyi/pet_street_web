@@ -2,6 +2,7 @@
   <div class="new-or-edit-ad">
     <!--<div class="title-line">新增分类</div>-->
     <div class="container">
+<!--
       <div class="item">
         <span class="left">广告位置：</span>
         <span class="right">
@@ -15,36 +16,82 @@
           </el-select>
         </span>
       </div>
-      <div class="item">
-        <span class="left">描述：</span>
-        <span class="right">
-          <el-input v-model="input" placeholder="请输入描述内容"></el-input>
-        </span>
-      </div>
+-->
       <div class="item">
         <span class="left">图片：</span>
         <span class="right">
-          <el-upload
-            class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          <pet-upload :imgUrl="adData.advertAvata" @on-success="handleAvatarSuccess"></pet-upload>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">描述：</span>
+        <span class="right">
+          <el-input type="textarea" :row="4" v-model="adData.advertDescribe" placeholder="请输入描述内容" style="width: 90%;"></el-input>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">广告名字：</span>
+        <span class="right">
+          <el-input v-model="adData.advertName" placeholder="请输入广告名字" style="width: 90%;"></el-input>
         </span>
       </div>
       <div class="item">
         <span class="left">URL：</span>
         <span class="right">
-          <el-input v-model="input" placeholder="请输入链接位置"></el-input>
+          <el-input v-model="adData.advertUrl" placeholder="请输入链接地址" style="width: 90%;"></el-input>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">排序：</span>
+        <span class="right">
+          <el-input v-model="adData.advertSort" placeholder="请输入排序数字" style="width: 90%;"></el-input>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">广告状态：</span>
+        <span class="right">
+          还不清楚
+          <!--<el-input v-model="adData.advertUrl" placeholder="请输入排序数字"></el-input>-->
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">广告类型：</span>
+        <span class="right">
+          还不清楚
+          <!--<el-input v-model="adData.advertUrl" placeholder="请输入排序数字"></el-input>-->
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">应用类型：</span>
+        <span class="right">
+          还不清楚
+          <!--<el-input v-model="adData.advertUrl" placeholder="请输入排序数字"></el-input>-->
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">是否启用：</span>
+        <span class="right">
+          <el-radio v-model="adData.enabled" :label="true">是</el-radio>
+          <el-radio v-model="adData.enabled" :label="false">否</el-radio>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">是否登录：</span>
+        <span class="right">
+          <el-radio v-model="adData.loginFlag" :label="true">是</el-radio>
+          <el-radio v-model="adData.loginFlag" :label="false">否</el-radio>
+        </span>
+      </div>
+      <div class="item">
+        <span class="left">版本：</span>
+        <span class="right">
+          <el-input v-model="adData.version" placeholder="请输入版本" style="width: 90%;"></el-input>
         </span>
       </div>
 
       <div class="footer">
-        <el-button type="danger">确认添加</el-button>
-        <el-button type="info" @click="cancel()">取消</el-button>
+        <el-button type="danger" @click="checkValidate()">确认添加</el-button>
+        <el-button type="info" @click="close()">取消</el-button>
       </div>
     </div>
   </div>
@@ -77,19 +124,84 @@ export default {
 
       ],
       imageUrl: '',
+      adData: {
+        advertAvata: '', // 广告图片
+        advertDescribe: '', // 广告描述
+        advertName: '', // 广告名字
+        advertSort: '', // 排序
+        advertStatus: '', // 广告状态
+        advertType: '', // 广告类型
+        advertUrl: '', // 广告连接
+        applyType: '', // 应用类型
+        enabled: '', // 是否启用
+        id: '', // id
+        loginFlag: '', // 是否登录
+        version: '' // 乐观锁-版本
+      }
     }
   },
   methods:{
     selectAccountRole(data){
       console.log(data)
     },
-    cancel(){
+    close(){
+      this.resetData();
       this.$emit('on-cancel');
     },
-    handleAvatarSuccess(){},
-    beforeAvatarUpload(){},
+    handleAvatarSuccess(res){
+      this.adData.advertAvata = res.imageUrl
+    },
+    resetData(){
+      this.adData = {
+        advertAvata: '', // 广告图片
+        advertDescribe: '', // 广告描述
+        advertName: '', // 广告名字
+        advertSort: '', // 排序
+        advertStatus: '', // 广告状态
+        advertType: '', // 广告类型
+        advertUrl: '', // 广告连接
+        applyType: '', // 应用类型
+        enabled: '', // 是否启用
+        id: '', // id
+        loginFlag: '', // 是否登录
+        version: '' // 乐观锁-版本
+      }
+    },
+    checkValidate(){
+      let checkFailure = (msg)=>{
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+      }
+      if(!this.adData.advertAvata){
+        checkFailure('请上传图片')
+        return
+      }
+      console.log(this.adData)
+      this.saveAdData()
+    },
+    saveAdData(){
+      let url = this.config.id ? '/api/mgmt/platform/advert/update' : '/api/mgmt/platform/advert/save'
+      this.$http.post(url, this.adData).then((res)=>{
+        if(res.code === 1000){
+          let msg = this.config.id ? '更新成功' : '保存成功'
+          this.$message({
+            message: msg,
+            type: 'success'
+          });
+          this.close();
+        }else{
+          this.$message({
+            message: res.message,
+            type: 'error'
+          })
+        }
+      })
+    }
   },
   created(){
+    this.config ? this.adData = this.config : ''
   },
 }
 </script>
@@ -100,6 +212,8 @@ export default {
     left: 0;
     right: 0;
     background-color: white;
+    bottom: 0;
+    overflow: auto;
     .title-line{
       padding: 10px;
       /*background-color: #E0E0E0;*/
