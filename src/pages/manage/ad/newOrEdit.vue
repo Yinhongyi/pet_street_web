@@ -57,15 +57,27 @@
       <div class="item">
         <span class="left">广告类型：</span>
         <span class="right">
-          还不清楚
-          <!--<el-input v-model="adData.advertUrl" placeholder="请输入排序数字"></el-input>-->
+          <el-select v-model="adData.advertStatus" placeholder="请选择">
+            <el-option
+              v-for="item in adTypeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </span>
       </div>
       <div class="item">
         <span class="left">应用类型：</span>
         <span class="right">
-          还不清楚
-          <!--<el-input v-model="adData.advertUrl" placeholder="请输入排序数字"></el-input>-->
+          <el-select v-model="adData.applyType" placeholder="请选择">
+            <el-option
+              v-for="item in appTypeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </span>
       </div>
       <div class="item">
@@ -137,7 +149,37 @@ export default {
         id: '', // id
         loginFlag: '', // 是否登录
         version: '' // 乐观锁-版本
-      }
+      },
+      // 广告类型
+      adTypeList: [
+        {
+          value: 'BUSINESS_SETTLED_TYPE',
+          label: '商家入驻'
+        },
+        {
+          value: 'ABOUT_TYPE',
+          label: '关于我们'
+        },
+        {
+          value: 'INVITATION_FRIEND',
+          label: '邀请好友'
+        }
+      ],
+      // 应用类型
+      appTypeList: [
+        {
+          value: 'APPLY_INDEX',
+          label: '首页广告'
+        },
+        {
+          value: 'APPLY_PET_HOMEPAGE',
+          label: '宠物圈主页广告'
+        },
+        {
+          value: 'APPLY_PERSONAL_HOME_PAGE',
+          label: '个人中心广告'
+        }
+      ]
     }
   },
   methods:{
